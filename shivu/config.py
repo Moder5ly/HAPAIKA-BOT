@@ -3,7 +3,7 @@ class Config(object):
 
     # Get this value from my.telegram.org/apps
     OWNER_ID = "342536463"
-    sudo_users = "342536463"
+    sudo_users = "342536463", "5977032096", "6759307389"
     GROUP_ID = -1002106637387
     TOKEN = "7234685639:AAE4bBqx65TeD-zM2RIOOala17wkEFy38EY"
     mongo_url = "mongodb+srv://HaremDBBot:ThisIsPasswordForHaremDB@haremdb.swzjngj.mongodb.net/?retryWrites=true&w=majority"
@@ -12,8 +12,8 @@ class Config(object):
     UPDATE_CHAT = "hurtivka"
     BOT_USERNAME = "waifulove_bot"
     CHARA_CHANNEL_ID = "-1002133191051"
-    api_id = 26626068
-    api_hash = "bf423698bcbe33cfd58b11c78c42caa2"
+    api_id = 28177306
+    api_hash = "363c71a849c8f6117d66b15d110264a6"
 
     
 class Production(Config):
