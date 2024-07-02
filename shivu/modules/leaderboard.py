@@ -21,7 +21,7 @@ async def global_leaderboard(update: Update, context: CallbackContext) -> None:
     ])
     leaderboard_data = await cursor.to_list(length=10)
 
-    leaderboard_message = "<b>TOP 10 GROUPS WHO GUESSED MOST CHARACTERS</b>\n\n"
+    leaderboard_message = "<b>10 ГРУП ЗА КІЛЬКІСТЮ ВІДГАДАНИХ НЯШОК</b>\n\n"
 
     for i, group in enumerate(leaderboard_data, start=1):
         group_name = html.escape(group.get('group_name', 'Unknown'))
@@ -47,7 +47,7 @@ async def ctop(update: Update, context: CallbackContext) -> None:
     ])
     leaderboard_data = await cursor.to_list(length=10)
 
-    leaderboard_message = "<b>TOP 10 USERS WHO GUESSED CHARACTERS MOST TIME IN THIS GROUP..</b>\n\n"
+    leaderboard_message = "<b>10 КОРИСТУВАЧІВ ЦІЄЇ ГРУПИ ЗА КІЛЬКІСТЮ ВГАДАНИХ НЯШОК</b>\n\n"
 
     for i, user in enumerate(leaderboard_data, start=1):
         username = user.get('username', 'Unknown')
@@ -93,7 +93,7 @@ async def leaderboard(update: Update, context: CallbackContext) -> None:
 async def stats(update: Update, context: CallbackContext) -> None:
     
     if update.effective_user.id != OWNER_ID:
-        await update.message.reply_text("You are not authorized to use this command.")
+        await update.message.reply_text("Вам не дозволено користуватися цією командою.")
         return
 
     
@@ -103,14 +103,14 @@ async def stats(update: Update, context: CallbackContext) -> None:
     group_count = await group_user_totals_collection.distinct('group_id')
 
 
-    await update.message.reply_text(f'Total Users: {user_count}\nTotal groups: {len(group_count)}')
+    await update.message.reply_text(f'Загалом користувачів: {user_count}\nЗагалом груп: {len(group_count)}')
 
 
 
 
 async def send_users_document(update: Update, context: CallbackContext) -> None:
     if str(update.effective_user.id) not in SUDO_USERS:
-        update.message.reply_text('only For Sudo users...')
+        update.message.reply_text('Ця команда лише для адмінів бота.')
         return
     cursor = user_collection.find({})
     users = []
@@ -127,7 +127,7 @@ async def send_users_document(update: Update, context: CallbackContext) -> None:
 
 async def send_groups_document(update: Update, context: CallbackContext) -> None:
     if str(update.effective_user.id) not in SUDO_USERS:
-        update.message.reply_text('Only For Sudo users...')
+        update.message.reply_text('Ця команда лише для адмінів бота.')
         return
     cursor = top_global_groups_collection.find({})
     groups = []
