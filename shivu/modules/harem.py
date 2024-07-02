@@ -15,9 +15,9 @@ async def harem(update: Update, context: CallbackContext, page=0) -> None:
     user = await user_collection.find_one({'id': user_id})
     if not user:
         if update.message:
-            await update.message.reply_text('You Have Not Guessed any Characters Yet..')
+            await update.message.reply_text('У твоєму гаремі ще немає няшок. Намагайся частіше вгадувати!')
         else:
-            await update.callback_query.edit_message_text('You Have Not Guessed any Characters Yet..')
+            await update.callback_query.edit_message_text('У твоєму гаремі ще немає няшок. Намагайся частіше вгадувати!')
         return
 
     characters = sorted(user['characters'], key=lambda x: (x['anime'], x['id']))
@@ -33,7 +33,7 @@ async def harem(update: Update, context: CallbackContext, page=0) -> None:
     if page < 0 or page >= total_pages:
         page = 0  
 
-    harem_message = f"<b>{escape(update.effective_user.first_name)}'s Harem - Page {page+1}/{total_pages}</b>\n"
+    harem_message = f"<b>Гарем {escape(update.effective_user.first_name)} - сторінка {page+1}/{total_pages}</b>\n"
 
     
     current_characters = unique_characters[page*15:(page+1)*15]
