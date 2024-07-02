@@ -56,11 +56,11 @@ async def message_counter(update: Update, context: CallbackContext) -> None:
             last_user[chat_id]['count'] += 1
             if last_user[chat_id]['count'] >= 200:
             
-                if user_id in warned_users and time.time() - warned_users[user_id] < 600:
+                if user_id in warned_users and time.time() - warned_users[user_id] < 300:
                     return
                 else:
                     
-                    await update.message.reply_text(f"{update.effective_user.first_name}, не спамити!\nТепер близько 10 хвилин твої повідомлення будуть проігноровані.")
+                    await update.message.reply_text(f"{update.effective_user.first_name}, не спамити!\nТепер близько 5 хвилин твої повідомлення будуть проігноровані.")
                     warned_users[user_id] = time.time()
                     return
         else:
@@ -100,7 +100,7 @@ async def send_image(update: Update, context: CallbackContext) -> None:
     await context.bot.send_photo(
         chat_id=chat_id,
         photo=character['img_url'],
-        caption=f"""З'явилася {character['rarity']} вайфу!\n<code>/guess</code> назва-персонажки - аби додати до свого гарему.""",
+        caption=f"""З'явилася {character['rarity']} няшка!\n<code>/guess</code> <i>ім'я-няшки</i> аби додати до свого гарему.""",
         parse_mode='Markdown')
 
 
@@ -118,7 +118,7 @@ async def guess(update: Update, context: CallbackContext) -> None:
     guess = ' '.join(context.args).lower() if context.args else ''
     
     if "()" in guess or "&" in guess.lower():
-        await update.message.reply_text(f"❌️ Такі слова не можна вживати, коли вгадуєш.")
+        await update.message.reply_text(f"❌️ Такі слова не можна вживати, коли відгадуєш.")
         return
 
 
@@ -195,10 +195,10 @@ async def guess(update: Update, context: CallbackContext) -> None:
         keyboard = [[InlineKeyboardButton(f"Переглянути гарем", switch_inline_query_current_chat=f"collection.{user_id}")]]
 
 
-        await update.message.reply_text(f'✅️ <b><a href="tg://user?id={user_id}">{escape(update.effective_user.first_name)}</a></b> вгадав/вгадала!\n\nІм''я: <b>{last_characters[chat_id]["name"]}</b>\nТАЙТЛ: <b>{last_characters[chat_id]["anime"]}</b>\nРІДКІСТЬ: <b>{last_characters[chat_id]["rarity"]}</b>\n\nПерсонажа додано до колекції. Користуйся <code>/harem</code> аби оглянути свій гарем.', parse_mode='HTML', reply_markup=InlineKeyboardMarkup(keyboard))
+        await update.message.reply_text(f"✅️ <b><a href='tg://user?id={user_id}'>{escape(update.effective_user.first_name)}</a></b> вгадав/вгадала!\n\nІм'я: <b>{last_characters[chat_id]['name']}</b>\nТайтл: <b>{last_characters[chat_id]['anime']}</b>\nРідкість: <b>{last_characters[chat_id]["rarity"]}</b>\n\nНяшку додано до гарему. Користуйся <code>/harem</code> аби оглянути свій гарем.", parse_mode='HTML', reply_markup=InlineKeyboardMarkup(keyboard))
 
     else:
-        await update.message.reply_text(f'{update.effective_user.first_name}, писати ім''я персонажки потрібно українською!')
+        await update.message.reply_text(f"{escape{update.effective_user.first_name}}, неправильне ім'я! І переконайся, що воно написане українською!")
    
 
 async def fav(update: Update, context: CallbackContext) -> None:
