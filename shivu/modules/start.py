@@ -20,7 +20,7 @@ async def start(update: Update, context: CallbackContext) -> None:
         await collection.insert_one({"_id": user_id, "first_name": first_name, "username": username})
         
         await context.bot.send_message(chat_id=GROUP_ID, 
-                                       text=f"New user Started The Bot..\n User: <a href='tg://user?id={user_id}'>{escape(first_name)})</a>", 
+                                       text=f"Новий користувач запустив бота.\nКористувач: <a href='tg://user?id={user_id}'>{escape(first_name)})</a>", 
                                        parse_mode='HTML')
     else:
         
@@ -34,17 +34,16 @@ async def start(update: Update, context: CallbackContext) -> None:
         
         
         caption = f"""
-        ***Heyyyy...***
+        ***Привіт!***
 
-***I am An Open Source Character Catcher Bot...​Add Me in Your group.. And I will send Random Characters After.. every 100 messages in Group... Use /guess to.. Collect that Characters in Your Collection.. and see Collection by using /Harem... So add in Your groups and Collect Your harem***
+***Я - бот для відлову різних няшок! ​Додаси мене у свій чат, і я надсилатиму різних няшок кожні 100 (або більше, це можна змінити) повідомлень. Не барися - додавай до свого чату і починай збирати власний гарем!***
         """
         
         keyboard = [
-            [InlineKeyboardButton("ADD ME", url=f'http://t.me/{BOT_USERNAME}?startgroup=new')],
-            [InlineKeyboardButton("SUPPORT", url=f'https://t.me/{SUPPORT_CHAT}'),
-            InlineKeyboardButton("UPDATES", url=f'https://t.me/{UPDATE_CHAT}')],
-            [InlineKeyboardButton("HELP", callback_data='help')],
-            [InlineKeyboardButton("SOURCE", url=f'https://github.com/MyNameIsShekhar/WAIFU-HUSBANDO-CATCHER')]
+            [InlineKeyboardButton("ДОДАТИ ДО ЧАТУ", url=f'http://t.me/{BOT_USERNAME}?startgroup=new')],
+            [InlineKeyboardButton("ПІДТРИМКА", url=f'https://t.me/{SUPPORT_CHAT}'),
+            InlineKeyboardButton("ОНОВЛЕННЯ", url=f'https://t.me/{UPDATE_CHAT}')],
+            [InlineKeyboardButton("КОМАНДИ", callback_data='help')],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         photo_url = random.choice(PHOTO_URL)
@@ -54,11 +53,10 @@ async def start(update: Update, context: CallbackContext) -> None:
     else:
         photo_url = random.choice(PHOTO_URL)
         keyboard = [
-            [InlineKeyboardButton("ADD ME", url=f'http://t.me/{BOT_USERNAME}?startgroup=new')],
-            [InlineKeyboardButton("SUPPORT", url=f'https://t.me/{SUPPORT_CHAT}'),
-            InlineKeyboardButton("UPDATES", url=f'https://t.me/{UPDATE_CHAT}')],
-            [InlineKeyboardButton("HELP", callback_data='help')],
-            [InlineKeyboardButton("SOURCE", url=f'https://github.com/MyNameIsShekhar/WAIFU-HUSBANDO-CATCHER')]
+            [InlineKeyboardButton("ДОДАТИ ДО ЧАТУ", url=f'http://t.me/{BOT_USERNAME}?startgroup=new')],
+            [InlineKeyboardButton("ПІДТРИМКА", url=f'https://t.me/{SUPPORT_CHAT}'),
+            InlineKeyboardButton("ОНОВЛЕННЯ", url=f'https://t.me/{UPDATE_CHAT}')],
+            [InlineKeyboardButton("КОМАНДИ", callback_data='help')],
         ]
         
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -70,17 +68,15 @@ async def button(update: Update, context: CallbackContext) -> None:
 
     if query.data == 'help':
         help_text = """
-    ***Help Section:***
+    ***Команди бота:***
     
-***/guess: To Guess character (only works in group)***
-***/fav: Add Your fav***
-***/trade : To trade Characters***
-***/gift: Give any Character from Your Collection to another user.. (only works in groups)***
-***/collection: To see Your Collection***
-***/topgroups : See Top Groups.. Ppl Guesses Most in that Groups***
-***/top: Too See Top Users***
-***/ctop : Your ChatTop***
-***/changetime: Change Character appear time (only works in Groups)***
+***/guess - відгадати няшку (працює лише в чаті)***
+***/fav - встановити няшку як улюблену***
+***/trade - обмінятися няшками (працює лише в чаті)***
+***/gift - подарувати свою няшку комусь у чаті***
+***/collection - глянути свій гарем***
+***/ctop - глянути топ чату за к-стю няшок***
+***/changetime - змінити періодичність появи няшок (працює лише в чаті)***
    """
         help_keyboard = [[InlineKeyboardButton("⤾ Bᴀᴄᴋ", callback_data='back')]]
         reply_markup = InlineKeyboardMarkup(help_keyboard)
@@ -90,18 +86,17 @@ async def button(update: Update, context: CallbackContext) -> None:
     elif query.data == 'back':
 
         caption = f"""
-        ***Hoyyyy...*** ✨
+        ***Привіт!***
 
-***I am An Open Source Character Catcher Bot..​Add Me in Your group.. And I will send Random Characters After.. every 100 messages in Group... Use /guess to.. Collect that Characters in Your Collection.. and see Collection by using /Harem... So add in Your groups and Collect Your harem***
+***Я - бот для відлову різних няшок! ​Додаси мене у свій чат, і я надсилатиму різних няшок кожні 100 (або більше, це можна змінити) повідомлень. Не барися - додавай до свого чату і починай збирати власний гарем!***
         """
 
         
         keyboard = [
-            [InlineKeyboardButton("ADD ME", url=f'http://t.me/{BOT_USERNAME}?startgroup=new')],
-            [InlineKeyboardButton("SUPPORT", url=f'https://t.me/{SUPPORT_CHAT}'),
-            InlineKeyboardButton("UPDATES", url=f'https://t.me/{UPDATE_CHAT}')],
-            [InlineKeyboardButton("HELP", callback_data='help')],
-            [InlineKeyboardButton("SOURCE", url=f'https://github.com/MyNameIsShekhar/WAIFU-HUSBANDO-CATCHER')]
+            [InlineKeyboardButton("ДОДАТИ ДО ЧАТУ", url=f'http://t.me/{BOT_USERNAME}?startgroup=new')],
+            [InlineKeyboardButton("ПІДТРИМКА", url=f'https://t.me/{SUPPORT_CHAT}'),
+            InlineKeyboardButton("ОНОВЛЕННЯ", url=f'https://t.me/{UPDATE_CHAT}')],
+            [InlineKeyboardButton("КОМАНДИ", callback_data='help')],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
