@@ -16,18 +16,18 @@ async def change_time(client: Client, message: Message):
         
 
     if member.status not in ADMINS :
-        await message.reply_text('Ви не адміністратор цієї групи.')
+        await message.reply_text('⚠️ Ви не адміністратор цієї групи.')
         return
 
     try:
         args = message.command
         if len(args) != 2:
-            await message.reply_text('Користуйтеся: <code>/changetime</code> <i>число</i>')
+            await message.reply_text('⚠️ Користуйтеся: <code>/changetime</code> <i>число</i>')
             return
 
         new_frequency = int(args[1])
         if new_frequency < 50:
-            await message.reply_text('Частота появи няшок має бути більша або дорівнювати 50.')
+            await message.reply_text('⚠️ Частота появи няшок має бути більша або дорівнювати 50.')
             return
 
     
@@ -38,6 +38,6 @@ async def change_time(client: Client, message: Message):
             return_document=ReturnDocument.AFTER
         )
 
-        await message.reply_text(f'Встановлено нову частоту появи няшок: {new_frequency} повідомлень.')
+        await message.reply_text(f'✅ Встановлено нову частоту появи няшок: {new_frequency} повідомлень.')
     except Exception as e:
-        await message.reply_text(f'Не вийшло змінити частоту появи няшок. {str(e)}')
+        await message.reply_text(f'❌ Не вийшло змінити частоту появи няшок. {str(e)}')
