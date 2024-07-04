@@ -26,7 +26,7 @@ async def change_time(client: Client, message: Message):
             return
 
         new_frequency = int(args[1])
-        if new_frequency < 50:
+        if new_frequency < 10:
             await message.reply_text('⚠️ Частота появи няшок має бути більша або дорівнювати 50.')
             return
 
