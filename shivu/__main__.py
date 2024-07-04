@@ -51,7 +51,7 @@ async def message_counter(update: Update, context: CallbackContext) -> None:
         else:
             message_frequency = 100
 
-        
+        #антиспам функція
         if chat_id in last_user and last_user[chat_id]['user_id'] == user_id:
             last_user[chat_id]['count'] += 1
             if last_user[chat_id]['count'] >= 200:
@@ -72,12 +72,12 @@ async def message_counter(update: Update, context: CallbackContext) -> None:
         else:
             message_counts[chat_id] = 1
 
-    
+        #поява няші, якщо к-сть повідомлення = заданій частоті повідомлень
         if message_counts[chat_id] % message_frequency == 0:
             await send_image(update, context)
             
             message_counts[chat_id] = 0
-            
+## поява няшки            
 async def send_image(update: Update, context: CallbackContext) -> None:
     chat_id = update.effective_chat.id
 
@@ -89,6 +89,7 @@ async def send_image(update: Update, context: CallbackContext) -> None:
     if len(sent_characters[chat_id]) == len(all_characters):
         sent_characters[chat_id] = []
 
+    #тут визначається, яка няша з'явиться
     character = random.choice([c for c in all_characters if c['id'] not in sent_characters[chat_id]])
 
     sent_characters[chat_id].append(character['id'])
@@ -100,10 +101,10 @@ async def send_image(update: Update, context: CallbackContext) -> None:
     await context.bot.send_photo(
         chat_id=chat_id,
         photo=character['img_url'],
-        caption=f"""З'явилася {character['rarity']} няшка!\n<code>/guess</code> <i>ім'я/прізвище няшки</i>, аби додати до свого гарему.""",
+        caption=f"З'явилася {character['rarity']} няшка!\n<code>/guess</code> <i>ім'я/прізвище няшки</i>, аби додати до свого гарему.",
         parse_mode='Markdown')
 
-
+#інфа, коли няша залутана - вона вмирає взагалі?
 async def guess(update: Update, context: CallbackContext) -> None:
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
@@ -195,10 +196,10 @@ async def guess(update: Update, context: CallbackContext) -> None:
         keyboard = [[InlineKeyboardButton(f"Переглянути гарем", switch_inline_query_current_chat=f"collection.{user_id}")]]
 
 
-        await update.message.reply_text(f"✅️ <b><a href='tg://user?id={user_id}'>{escape(update.effective_user.first_name)}</a></b> вгадав/вгадала!\n\nІм'я: <b>{last_characters[chat_id]['name']}</b>\nТайтл: <b>{last_characters[chat_id]['anime']}</b>\nРідкість: <b>{last_characters[chat_id]["rarity"]}</b>\n\nНяшку додано до гарему. Користуйся <code>/harem</code> аби оглянути свій гарем.", parse_mode='HTML', reply_markup=InlineKeyboardMarkup(keyboard))
+        await update.message.reply_text(f"<b><a href='tg://user?id={user_id}'>{escape(update.effective_user.first_name)}</a></b> відгадав/відгадала!\n\nІм'я: <b>{last_characters[chat_id]['name']}</b>\nТайтл: <b>{last_characters[chat_id]['anime']}</b>\nРідкість: <b>{last_characters[chat_id]["rarity"]}</b>\n\nНяшку додано до гарему. Користуйся <code>/harem</code> аби оглянути свій гарем.", parse_mode='HTML', reply_markup=InlineKeyboardMarkup(keyboard))
 
     else:
-        await update.message.reply_text(f"{escape{update.effective_user.first_name}}, неправильне ім'я! І переконайся, що воно написане українською!")
+        await update.message.reply_text(f"{escape{update.effective_user.first_name}}, неправильне ім'я (чи прізвище)! І переконайся, що воно написане українською!")
    
 
 async def fav(update: Update, context: CallbackContext) -> None:
@@ -206,7 +207,7 @@ async def fav(update: Update, context: CallbackContext) -> None:
 
     
     if not context.args:
-        await update.message.reply_text('Надайте ідентифікатор персонажа.')
+        await update.message.reply_text('Надай ідентифікатор няшки.')
         return
 
     character_id = context.args[0]
@@ -214,13 +215,13 @@ async def fav(update: Update, context: CallbackContext) -> None:
     
     user = await user_collection.find_one({'id': user_id})
     if not user:
-        await update.message.reply_text('У твоїй колекції зовсім немає персонажів.')
+        await update.message.reply_text('У твоєму гаремі зовсім немає няшок.')
         return
 
 
     character = next((c for c in user['characters'] if c['id'] == character_id), None)
     if not character:
-        await update.message.reply_text('Ця персонажка не у твоїй колекції.')
+        await update.message.reply_text('Ця няшка не у твоєму гаремі.')
         return
 
     
@@ -229,7 +230,7 @@ async def fav(update: Update, context: CallbackContext) -> None:
     
     await user_collection.update_one({'id': user_id}, {'$set': {'favorites': user['favorites']}})
 
-    await update.message.reply_text(f'Персонажку {character["name"]} встановлено, як улюблену.')
+    await update.message.reply_text(f'✅ Няшку {character["name"]} встановлено, як улюблену.')
     
 
 
