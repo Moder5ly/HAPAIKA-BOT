@@ -1,4 +1,4 @@
-## Хапайка вайфу та хасбендо
+## Хапайка няшок
 
 
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)<br> [![Support Group!](https://img.shields.io/badge/Join%20Group-↗-green)](https://t.me/hurtivka)
@@ -6,13 +6,13 @@
 
 ## Як додавати няшок до бота?
 
-Формат: 
+#### Формат: 
 ```
-/upload img_url character-name anime-name rarity-number
+/upload посилання_на_картинку ім'я-няшки назва-аніме рідкість
 ```
-#### Приклад: 
+Приклад використання: 
 ```
-/upload Img_url muzan-kibutsuji Demon-slayer 3
+/upload посилання_на_картинку mahiro-oyama мій-братик-вже-не-братик! 4
 ```
 Рідкості наступні:
 
@@ -30,15 +30,13 @@
 - `/trade` - обмінятися няшками
 - `/gift` - подарувати няшку комусь
 - `/collection` - показати свій гарем няшок
-- `/topgroups` - List the groups with biggest harem (globally)
-- `/top` - List the users with biggest harem (globally)
-- `/ctop` - List the users with biggest harem (current chat)
+- `/ctop` - глянути топ збирачів гарему у вашому чаті
 - `/changetime` - змінити частоту появи няшок
   
 ## Команди для адмінів
-- `/upload` - Add a new character to the database 
-- `/delete` - Delete a character from the database 
-- `/update` - Update stats of a character in the database
+- `/upload` - додати нову няшку до бази даних
+- `/delete` - видалити няшку з бази даних
+- `/update` - оновити значення няшки в базі даних
 
 ## Команди для власника
 - `/stats` - Lists number or groups and users
