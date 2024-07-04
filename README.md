@@ -1,15 +1,10 @@
 ## Хапайка вайфу та хасбендо
 
 
-![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)<br> [![Open Source Love svg2](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)<br>
-[![Support Group!](https://img.shields.io/badge/Join%20Group-↗-green)](https://t.me/collect_em_support)
+![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)<br> [![Support Group!](https://img.shields.io/badge/Join%20Group-↗-green)](https://t.me/hurtivka)
 
 
-_**Available On Telegram As 
-[Collect Em all](https://t.me/Collect_em_AllBot) and**_
-_Ask for Help in our [Support Chat](https://t.me/Collect_em_support)_
-
-## Як завантажити няшок?
+## Як додавати няшок до бота?
 
 Формат: 
 ```
@@ -19,51 +14,47 @@ _Ask for Help in our [Support Chat](https://t.me/Collect_em_support)_
 ```
 /upload Img_url muzan-kibutsuji Demon-slayer 3
 ```
+Рідкості наступні:
 
-
-
-use Rarity Number accordingly rarity Map
-
-| Number | Rarity     |
-| ------ | -----------|
-| 1 | ⚪️ Common   |
-| 2 | 🟣 Rare     |
-| 3 | 🟡 Legendary|
-| 4 | 🟢 Medium   |
-
+| Код    | Рідкість      |
+| ------ | ------------- |
+| 1      | ⚪️ Звичайна   |
+| 2      | 🟣 Рідкісна   |
+| 3      | 🟡 Легендарна |
+| 4      | 🔴 Міфічна    |
 
 ## Команди для користувачів
-- `/guess` - Guess the character
-- `/fav` - Add a character to favorites
-- `/trade` - Trade a character with another user
-- `/gift` - Gift a character to another user
-- `/collection` - Boast your harem collection
+- `/ping` - перевірити час швидкодії бота
+- `/guess` - вгадати няшку
+- `/fav` - встановити няшку як улюблену
+- `/trade` - обмінятися няшками
+- `/gift` - подарувати няшку комусь
+- `/collection` - показати свій гарем няшок
 - `/topgroups` - List the groups with biggest harem (globally)
 - `/top` - List the users with biggest harem (globally)
 - `/ctop` - List the users with biggest harem (current chat)
-- `/changetime` - Change the frequency of character spawn
+- `/changetime` - змінити частоту появи няшок
   
 ## Команди для адмінів
 - `/upload` - Add a new character to the database 
 - `/delete` - Delete a character from the database 
-- `/update` - Update stats of a character in the database 
+- `/update` - Update stats of a character in the database
 
 ## Команди для власника
-- `/ping` - Pings the bot and sends a response
 - `/stats` - Lists number or groups and users
 - `/list` - Sends a document with list of all users that used the bot
 - `/groups` - Sends a document with list of all groups that the bot has been in
 
-## DEPLOYMENT METHODS
+## Способи встановлення
 
 ### Heroku
-- Fork The Repository
-- Go to [`config.py`](./shivu/config.py)
-- Fill the All variables and Go to heroku. and deploy Your forked Repository
+- Форкнути репозиторій.
+- Заповнити всі змінні у [`config.py`](./shivu/config.py).
+- Перейти до Heroku та задеплоїти репозиторій.
 
 ### Local Deploy/VPS
-- Fill variables in [`config.py`](./shivu/config.py) 
-- Open your VPS terminal (we're using Debian based) and run the following:
+- Заповнити всі змінні у [`config.py`](./shivu/config.py).
+- Відкрити термінал вашого VPS (у нашому випадку, на базі Debian) та запустити наступну інструкцію:
 ```bash
 sudo apt-get update && sudo apt-get upgrade -y           
 
@@ -78,6 +69,6 @@ sudo apt install tmux && tmux
 python3 -m shivu
 ```       
 
-## Developer Suggestions 
-- Don't Use heroku. Deploy on Heroku is just for testing. Otherwise Bot's Inline will Work Too Slow.
-- Use a reliable VPS provider
+## Поради розробника
+- Не користуватися Heroku. Хіба що для тестування. Інакше інлайн працюватиме повільно.
+- Користуватися надійним VPS-провайдером.
