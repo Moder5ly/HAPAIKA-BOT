@@ -186,7 +186,7 @@ async def guess(update: Update, context: CallbackContext) -> None:
         await update.message.reply_text(f"<b><a href='tg://user?id={user_id}'>{escape(update.effective_user.first_name)}</a></b> відгадав/відгадала няшку!\n\nЦе <b>{last_characters[chat_id]['name']}</b> з {last_characters[chat_id]['anime']}.\n{last_characters[chat_id]['event']} версія!", parse_mode = 'HTML', reply_markup = InlineKeyboardMarkup(keyboard))
 
     else:
-        await update.message.reply_text(f"{escape{update.effective_user.first_name}}, неправильне ім'я (чи прізвище)! І переконайся, що воно написане українською!")
+        await update.message.reply_text('❌️ Неправильно!')
    
 async def fav(update: Update, context: CallbackContext) -> None:
     user_id = update.effective_user.id
