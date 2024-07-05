@@ -75,16 +75,10 @@ async def inlinequery(update: Update, context: CallbackContext) -> None:
         if query.startswith('collection.'):
             user_character_count = sum(c['id'] == character['id'] for c in user['characters'])
             user_anime_characters = sum(c['anime'] == character['anime'] for c in user['characters'])
-            caption = f"Гляньте-но на няшку <a href='tg://user?id={user['id']}'>{(escape(user.get('first_name', user['id'])))}</a>!\n\n
-                        <b>{character['anime']}</b> ({user_anime_characters}/{anime_characters})\n
-                        {character['id']}. {character['name']} (x{user_character_count})</b>\n
-                        {character['event']} версія"
+            caption = f"Гляньте-но на няшку <a href='tg://user?id={user['id']}'>{(escape(user.get('first_name', user['id'])))}</a>!\n\n<b>{character['anime']}</b> ({user_anime_characters}/{anime_characters})\n{character['id']}. {character['name']} (x{user_character_count})</b>\n{character['event']} версія"
         else:
             #caption = f"<b>Гляньте-но на цю няшку!</b>\n\n🌸:<b> {character['name']}</b>\n🏖️: <b>{character['anime']}</b>\n<b>{character['rarity']}</b>\n🆔️: <b>{character['id']}</b>\n\n<b>Вгадано глобально: {global_count} разів.</b>"
-            caption = f"<b>Гляньте-но на цю няшку!</b>\n\n
-                        <b>{character['anime']}</b>\n
-                        {character['id']}. {character['name']}\n
-                        {character['event']} версія"
+            caption = f"<b>Гляньте-но на цю няшку!</b>\n\n<b>{character['anime']}</b>\n{character['id']}. {character['name']}\n{character['event']} версія"
         results.append(
             InlineQueryResultPhoto(
                 thumbnail_url = character['img_url'],
