@@ -114,11 +114,7 @@ async def upload(update: Update, context: CallbackContext) -> None:
             message = await context.bot.send_photo(
                 chat_id = CHARA_CHANNEL_ID,
                 photo = args[0],
-                caption = f"<b>Няшка:</b> {character_name} - {id}\n
-                            <b>Транслітерація імені:</b> {character_name_translit}\n
-                            <b>Тайтл:</b> {anime}\n
-                            <b>Подія:</b> {event}\n\n
-                            Додано користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
+                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Транслітерація імені:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event}\n\nДодано користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
                 parse_mode = 'HTML'
             )
             character['message_id'] = message.message_id
@@ -142,7 +138,6 @@ async def delete(update: Update, context: CallbackContext) -> None:
         if len(args) != 1:
             await update.message.reply_text("❌️ Неправильний формат! Формат: <code>/delete</code> <i>ID</i>")
             return
-
         
         character = await collection.find_one_and_delete({'id': args[0]})
 
@@ -260,11 +255,7 @@ async def update(update: Update, context: CallbackContext) -> None:
             await context.bot.edit_message_caption(
                 chat_id = CHARA_CHANNEL_ID,
                 message_id = character['message_id'],
-                caption = f"<b>Няшка:</b> {character_name} - {id}\n
-                            <b>Транслітерація імені:</b> {character_name_translit}\n
-                            <b>Тайтл:</b> {anime}\n
-                            <b>Подія:</b> {event}\n\n
-                            Оновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
+                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Транслітерація імені:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event}\n\nОновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
                 parse_mode = 'HTML'
             )
 
