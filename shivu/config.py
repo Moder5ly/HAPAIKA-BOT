@@ -5,10 +5,10 @@ class Config(object):
     api_id = 28177306
     api_hash = "363c71a849c8f6117d66b15d110264a6"
     # тег і API-токен бота
-    BOT_USERNAME = "waifulove_bot"
-    TOKEN = "7234685639:AAE4bBqx65TeD-zM2RIOOala17wkEFy38EY"
+    BOT_USERNAME = "hapaika_bot"
+    TOKEN = "7325552038:AAER11O3ZVBcgBu29BUhvj2Dof9paAaoWfc"
     # база даних бота
-    mongo_url = "mongodb+srv://moder5ly:n64o3qsMyxvsSywY@cluster0.5a8ke5d.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    mongo_url = "mongodb+srv://moder5ly:n64o3qsMyxvsSywY@cluster0.cjksadk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
     # картинки бота
     PHOTO_URL = ["https://telegra.ph/file/b925c3985f0f325e62e17.jpg", "https://telegra.ph/file/4211fb191383d895dab9d.jpg"]
     # ID власника бота
