@@ -14,7 +14,6 @@ from shivu import collection, top_global_groups_collection, group_user_totals_co
 from shivu import application, SUPPORT_CHAT, UPDATE_CHAT, db, LOGGER
 from shivu.modules import ALL_MODULES
 
-
 locks = {}
 message_counters = {}
 spam_counters = {}
@@ -23,17 +22,14 @@ sent_characters = {}
 first_correct_guesses = {}
 message_counts = {}
 
-
 for module_name in ALL_MODULES:
     imported_module = importlib.import_module("shivu.modules." + module_name)
-
 
 last_user = {}
 warned_users = {}
 def escape_markdown(text):
     escape_chars = r'\*_`\\~>#+-=|{}.!'
     return re.sub(r'([%s])' % re.escape(escape_chars), r'\\\1', text)
-
 
 async def message_counter(update: Update, context: CallbackContext) -> None:
     chat_id = str(update.effective_chat.id)
@@ -43,8 +39,7 @@ async def message_counter(update: Update, context: CallbackContext) -> None:
         locks[chat_id] = asyncio.Lock()
     lock = locks[chat_id]
 
-    async with lock:
-        
+    async with lock:        
         chat_frequency = await user_totals_collection.find_one({'chat_id': chat_id})
         if chat_frequency:
             message_frequency = chat_frequency.get('message_frequency', 100)
@@ -54,19 +49,17 @@ async def message_counter(update: Update, context: CallbackContext) -> None:
         #антиспам функція
         if chat_id in last_user and last_user[chat_id]['user_id'] == user_id:
             last_user[chat_id]['count'] += 1
-            if last_user[chat_id]['count'] >= 200:
+            if last_user[chat_id]['count'] >= 1000:
             
                 if user_id in warned_users and time.time() - warned_users[user_id] < 300:
                     return
-                else:
-                    
+                else:                    
                     await update.message.reply_text(f"{update.effective_user.first_name}, не спамити!\nТепер близько 5 хвилин твої повідомлення будуть проігноровані.")
                     warned_users[user_id] = time.time()
                     return
         else:
             last_user[chat_id] = {'user_id': user_id, 'count': 1}
-
-    
+  
         if chat_id in message_counts:
             message_counts[chat_id] += 1
         else:
@@ -77,7 +70,7 @@ async def message_counter(update: Update, context: CallbackContext) -> None:
             await send_image(update, context)
             
             message_counts[chat_id] = 0
-## поява няшки            
+# функція появи няшки            
 async def send_image(update: Update, context: CallbackContext) -> None:
     chat_id = update.effective_chat.id
 
@@ -89,7 +82,7 @@ async def send_image(update: Update, context: CallbackContext) -> None:
     if len(sent_characters[chat_id]) == len(all_characters):
         sent_characters[chat_id] = []
 
-    #тут визначається, яка няша з'явиться
+    #тут вибирається няша з усієї бази
     character = random.choice([c for c in all_characters if c['id'] not in sent_characters[chat_id]])
 
     sent_characters[chat_id].append(character['id'])
@@ -98,13 +91,14 @@ async def send_image(update: Update, context: CallbackContext) -> None:
     if chat_id in first_correct_guesses:
         del first_correct_guesses[chat_id]
 
+    #виведення няші
     await context.bot.send_photo(
-        chat_id=chat_id,
-        photo=character['img_url'],
-        caption=f"З'явилася {character['rarity']} няшка!\n<code>/guess</code> <i>ім'я/прізвище няшки</i>, аби додати до свого гарему.",
-        parse_mode='Markdown')
+        chat_id = chat_id,
+        photo = character['img_url'],
+        caption = f"З'явилася {character['rarity']} няшка!\n<code>/guess</code> <i>ім'я/прізвище няшки</i>, аби додати до свого гарему.",
+        parse_mode = 'Markdown')
 
-#інфа, коли няша залутана - вона вмирає взагалі?
+# функція відгадування
 async def guess(update: Update, context: CallbackContext) -> None:
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
@@ -119,14 +113,13 @@ async def guess(update: Update, context: CallbackContext) -> None:
     guess = ' '.join(context.args).lower() if context.args else ''
     
     if "()" in guess or "&" in guess.lower():
-        await update.message.reply_text(f"❌️ Такі слова не можна вживати, коли відгадуєш.")
+        await update.message.reply_text(f"❌️ Такі символи не можна вживати.")
         return
 
-
     name_parts = last_characters[chat_id]['name'].lower().split()
+    translit_name_parts = last_characters[chat_id]['name_translit'].lower().split()
 
-    if sorted(name_parts) == sorted(guess.split()) or any(part == guess for part in name_parts):
-
+    if sorted(name_parts) == sorted(guess.split()) or any(part == guess for part in name_parts) or sorted(translit_name_parts) == sorted(guess.split()) or any(tpart == guess for tpart in translit_name_parts):
     
         first_correct_guesses[chat_id] = user_id
         
@@ -150,7 +143,6 @@ async def guess(update: Update, context: CallbackContext) -> None:
                 'characters': [last_characters[chat_id]],
             })
 
-        
         group_user_total = await group_user_totals_collection.find_one({'user_id': user_id, 'group_id': chat_id})
         if group_user_total:
             update_fields = {}
@@ -172,8 +164,6 @@ async def guess(update: Update, context: CallbackContext) -> None:
                 'count': 1,
             })
 
-
-    
         group_info = await top_global_groups_collection.find_one({'group_id': chat_id})
         if group_info:
             update_fields = {}
@@ -190,62 +180,48 @@ async def guess(update: Update, context: CallbackContext) -> None:
                 'group_name': update.effective_chat.title,
                 'count': 1,
             })
-
-
-        
+       
         keyboard = [[InlineKeyboardButton(f"Переглянути гарем", switch_inline_query_current_chat=f"collection.{user_id}")]]
 
-
-        await update.message.reply_text(f"<b><a href='tg://user?id={user_id}'>{escape(update.effective_user.first_name)}</a></b> відгадав/відгадала!\n\nІм'я: <b>{last_characters[chat_id]['name']}</b>\nТайтл: <b>{last_characters[chat_id]['anime']}</b>\nРідкість: <b>{last_characters[chat_id]["rarity"]}</b>\n\nНяшку додано до гарему. Користуйся <code>/harem</code> аби оглянути свій гарем.", parse_mode='HTML', reply_markup=InlineKeyboardMarkup(keyboard))
+        await update.message.reply_text(f"<b><a href='tg://user?id={user_id}'>{escape(update.effective_user.first_name)}</a></b> відгадав/відгадала няшку!\n\nЦе <b>{last_characters[chat_id]['name']}</b> з {last_characters[chat_id]['anime']}.\n{last_characters[chat_id]['event']} версія!", parse_mode = 'HTML', reply_markup = InlineKeyboardMarkup(keyboard))
 
     else:
         await update.message.reply_text(f"{escape{update.effective_user.first_name}}, неправильне ім'я (чи прізвище)! І переконайся, що воно написане українською!")
    
-
 async def fav(update: Update, context: CallbackContext) -> None:
     user_id = update.effective_user.id
-
-    
+   
     if not context.args:
         await update.message.reply_text('Надай ідентифікатор няшки.')
         return
 
     character_id = context.args[0]
-
     
     user = await user_collection.find_one({'id': user_id})
     if not user:
         await update.message.reply_text('У твоєму гаремі зовсім немає няшок.')
         return
 
-
     character = next((c for c in user['characters'] if c['id'] == character_id), None)
     if not character:
         await update.message.reply_text('Ця няшка не у твоєму гаремі.')
         return
-
     
     user['favorites'] = [character_id]
-
     
     await user_collection.update_one({'id': user_id}, {'$set': {'favorites': user['favorites']}})
-
     await update.message.reply_text(f'✅ Няшку {character["name"]} встановлено, як улюблену.')
     
-
-
-
 def main() -> None:
-    """Run bot."""
+    """Бота запущено."""
 
-    application.add_handler(CommandHandler(["guess", "protecc", "collect", "grab", "hunt"], guess, block=False))
-    application.add_handler(CommandHandler("fav", fav, block=False))
-    application.add_handler(MessageHandler(filters.ALL, message_counter, block=False))
+    application.add_handler(CommandHandler(["guess", "protecc", "collect", "grab", "hunt"], guess, block = False))
+    application.add_handler(CommandHandler("fav", fav, block = False))
+    application.add_handler(MessageHandler(filters.ALL, message_counter, block = False))
 
-    application.run_polling(drop_pending_updates=True)
+    application.run_polling(drop_pending_updates = True)
     
 if __name__ == "__main__":
     shivuu.start()
-    LOGGER.info("Bot started")
+    LOGGER.info("Бота запущено.")
     main()
-
