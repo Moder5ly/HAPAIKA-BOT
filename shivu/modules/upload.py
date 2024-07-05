@@ -7,12 +7,12 @@ from telegram.ext import CommandHandler, CallbackContext
 from shivu import application, sudo_users, collection, db, CHARA_CHANNEL_ID, SUPPORT_CHAT
 
 WRONG_FORMAT_TEXT = """❌️ Некоректний формат! 
-                        Формат: <code>/upload</code> <i>посилання_на_картинку ім'я-няшки назва-аніме рідкість подія трансліт-імені</i>
+                        Формат: <code>/upload</code> <i>посилання_на_картинку ім'я-няшки назва-аніме подія трансліт-імені</i>
 
-                        Ім'я няші та назву аніме писати через дефіс, наприклад:
-                        <code>/upload</code> <i>https://i.imgur.com/kipNnjf.jpg махіро-ояма мій-братик-вже-не-братик! 4 8 mahiro-oyama</i>
+                        Ім'я няші, назву аніме та транслітерацію писати через дефіс, наприклад:
+                        <code>/upload</code> <i>https://i.imgur.com/kipNnjf.jpg махіро-ояма мій-братик-вже-не-братик! 8 mahiro-oyama</i>
 
-                        Рідкість та подія вказуються відповідними числами. Транслітерацію імені вказувати англійською."""
+                        Подія вказується відповідним числом. Транслітерацію імені вказувати англійською."""
 
 async def get_next_sequence_number(sequence_name):
     sequence_collection = db.sequences
@@ -33,13 +33,13 @@ async def upload(update: Update, context: CallbackContext) -> None:
         return
     try:
         args = context.args
-        if len(args) != 6:
+        if len(args) != 5:
             await update.message.reply_text(WRONG_FORMAT_TEXT)
             return
 
         character_name = args[1].replace('-', ' ').title()
         anime = args[2].replace('-', ' ').title()
-        character_name_translit = args[5].replace('-', ' ').title()
+        character_name_translit = args[4].replace('-', ' ').title()
 
         try:
             urllib.request.urlopen(args[0])
@@ -47,29 +47,29 @@ async def upload(update: Update, context: CallbackContext) -> None:
             await update.message.reply_text("❌️ Некоректне посилання. Радимо спочатку завантажити картинку на Imgur та вставляти пряме посилання звідти.")
             return
 
-        rarity_map = {
-                     1: "⚪️ Звичайна", 
-                     2: "🟣 Рідкісна", 
-                     3: "🟡 Легендарна", 
-                     4: "🔴 Міфічна"
-                     }
-        try:
-            rarity = rarity_map[int(args[3])]
-        except KeyError:
-            await update.message.reply_text("""❌️ Неправильна рідкість. Оберіть рідкість з нижченаведених варіантів:
-                                                1 : ⚪️ Звичайна
-                                                2 : 🟣 Рідкісна
-                                                3 : 🟡 Легендарна
-                                                4 : 🔴 Міфічна""")
-            return
+#        rarity_map = {
+#                     1: "⚪️ Звичайна", 
+#                     2: "🟣 Рідкісна", 
+#                     3: "🟡 Легендарна", 
+#                     4: "🔴 Міфічна"
+#                     }
+#        try:
+#            rarity = rarity_map[int(args[3])]
+#        except KeyError:
+#            await update.message.reply_text("""❌️ Неправильна рідкість. Оберіть рідкість з нижченаведених варіантів:
+#                                                1 : ⚪️ Звичайна
+#                                                2 : 🟣 Рідкісна
+#                                                3 : 🟡 Легендарна
+#                                                4 : 🔴 Міфічна""")
+#            return
 
         event_map =  {
                      1: "🐾 Твариноподібна", 
                      2: "👘 Східна", 
-                     3: "🧨 Знаменна", 
+                     3: "🎉 Знаменна", 
                      4: "🐰 Великодня",
                      5: "🧑🏻‍🤝‍🧑🏻 Парна",
-                     6: "🌈 Протилежна",
+                     6: "🌈 Статезмінна",
                      7: "🏖️ Пляжна",
                      8: "🧹 Покоївкова",
                      9: "👩‍🏫 Шкільна",
@@ -79,15 +79,15 @@ async def upload(update: Update, context: CallbackContext) -> None:
                      13: "Звичайна"
                      }
         try:
-            event = event_map[int(args[4])]
+            event = event_map[int(args[3])]
         except KeyError:
             await update.message.reply_text("""❌️ Неправильна подія. Вкажіть подію, залежно від місяця:
                                                 1 (січень): 🐾 Твариноподібна
                                                 2 (лютий): 👘 Східна
-                                                3 (березень): 🧨 Знаменна
+                                                3 (березень): 🎉 Знаменна
                                                 4 (квітень): 🐰 Великодня
                                                 5 (травень): 🧑🏻‍🤝‍🧑🏻 Парна
-                                                6 (червень): 🌈 Протилежна
+                                                6 (червень): 🌈 Статезмінна
                                                 7 (липень): 🏖️ Пляжна
                                                 8 (серпень): 🧹 Покоївкова
                                                 9 (вересень): 👩‍🏫 Шкільна
@@ -104,7 +104,7 @@ async def upload(update: Update, context: CallbackContext) -> None:
             'name': character_name,
             'name_translit': character_name_translit,
             'anime': anime,
-            'rarity': rarity,
+#           'rarity': rarity,
             'event': event,
             'id': id
         }
@@ -117,7 +117,6 @@ async def upload(update: Update, context: CallbackContext) -> None:
                 caption = f"<b>Няшка:</b> {character_name} - {id}\n
                             <b>Транслітерація імені:</b> {character_name_translit}\n
                             <b>Тайтл:</b> {anime}\n
-                            <b>Рідкість:</b> {rarity}\n
                             <b>Подія:</b> {event}\n\n
                             Додано користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
                 parse_mode = 'HTML'
@@ -175,7 +174,7 @@ async def update(update: Update, context: CallbackContext) -> None:
             return
 
         # перевіряємо, чи поле валідне
-        valid_fields = ['img_url', 'name', 'name_translit', 'anime', 'rarity', 'event']
+        valid_fields = ['img_url', 'name', 'name_translit', 'anime', 'event']
         if args[1] not in valid_fields:
             await update.message.reply_text(f"❌️ Неправильно вказане поле. Будь ласка, оберіть одне з наступних: {', '.join(valid_fields)}.")
             return
@@ -183,24 +182,24 @@ async def update(update: Update, context: CallbackContext) -> None:
         # змінюємо поле
         if args[1] in ['name', 'name_translit', 'anime']:
             new_value = args[2].replace('-', ' ').title()
-        elif args[1] == 'rarity':
-            rarity_map = {
-                     1: "⚪️ Звичайна", 
-                     2: "🟣 Рідкісна", 
-                     3: "🟡 Легендарна", 
-                     4: "🔴 Міфічна",
-                     5: "💮 Особлива"
-                     }
-            try:
-                new_value = rarity_map[int(args[2])]
-            except KeyError:
-                await update.message.reply_text("""❌️ Неправильна рідкість. Оберіть рідкість з нижченаведених варіантів:
-                                                1 : ⚪️ Звичайна
-                                                2 : 🟣 Рідкісна
-                                                3 : 🟡 Легендарна
-                                                4 : 🔴 Міфічна
-                                                5 : 💮 Особлива""")
-                return
+       # elif args[1] == 'rarity':
+       #     rarity_map = {
+       #              1: "⚪️ Звичайна", 
+       #              2: "🟣 Рідкісна", 
+       #              3: "🟡 Легендарна", 
+       #              4: "🔴 Міфічна",
+       #              5: "💮 Особлива"
+       #              }
+       #     try:
+       #         new_value = rarity_map[int(args[2])]
+       #     except KeyError:
+       #         await update.message.reply_text("""❌️ Неправильна рідкість. Оберіть рідкість з нижченаведених варіантів:
+       #                                         1 : ⚪️ Звичайна
+       #                                         2 : 🟣 Рідкісна
+       #                                         3 : 🟡 Легендарна
+       #                                         4 : 🔴 Міфічна
+       #                                         5 : 💮 Особлива""")
+       #         return
         elif args[1] == 'event':
             event_map =  {
                      1: "🐾 Твариноподібна", 
@@ -208,7 +207,7 @@ async def update(update: Update, context: CallbackContext) -> None:
                      3: "🧨 Знаменна", 
                      4: "🐰 Великодня",
                      5: "🧑🏻‍🤝‍🧑🏻 Парна",
-                     6: "🌈 Протилежна",
+                     6: "🌈 Статезмінна",
                      7: "🏖️ Пляжна",
                      8: "🧹 Покоївкова",
                      9: "👩‍🏫 Шкільна",
@@ -250,7 +249,6 @@ async def update(update: Update, context: CallbackContext) -> None:
                 caption = f"<b>Няшка:</b> {character_name} - {id}\n
                             <b>Транслітерація імені:</b> {character_name_translit}\n
                             <b>Тайтл:</b> {anime}\n
-                            <b>Рідкість:</b> {rarity}\n
                             <b>Подія:</b> {event}\n\n
                             Оновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
                 parse_mode = 'HTML'
@@ -265,7 +263,6 @@ async def update(update: Update, context: CallbackContext) -> None:
                 caption = f"<b>Няшка:</b> {character_name} - {id}\n
                             <b>Транслітерація імені:</b> {character_name_translit}\n
                             <b>Тайтл:</b> {anime}\n
-                            <b>Рідкість:</b> {rarity}\n
                             <b>Подія:</b> {event}\n\n
                             Оновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
                 parse_mode = 'HTML'
