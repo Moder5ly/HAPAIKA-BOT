@@ -241,11 +241,7 @@ async def update(update: Update, context: CallbackContext) -> None:
             message = await context.bot.send_photo(
                 chat_id = CHARA_CHANNEL_ID,
                 photo = new_value,
-                caption = f"<b>Няшка:</b> {character_name} - {id}\n
-                            <b>Транслітерація імені:</b> {character_name_translit}\n
-                            <b>Тайтл:</b> {anime}\n
-                            <b>Подія:</b> {event}\n\n
-                            Оновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
+                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Транслітерація імені:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event}\n\nОновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
                 parse_mode = 'HTML'
             )
             character['message_id'] = message.message_id
