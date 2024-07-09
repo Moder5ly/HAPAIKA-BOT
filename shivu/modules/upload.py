@@ -6,13 +6,7 @@ from telegram.ext import CommandHandler, CallbackContext
 
 from shivu import application, sudo_users, collection, db, CHARA_CHANNEL_ID, SUPPORT_CHAT
 
-WRONG_FORMAT_TEXT = """❌️ Некоректний формат! 
-                        Формат: <code>/upload</code> <i>посилання_на_картинку ім'я-няшки назва-аніме подія трансліт-імені</i>
-
-                        Ім'я няші, назву аніме та транслітерацію писати через дефіс, наприклад:
-                        <code>/upload</code> <i>https://i.imgur.com/kipNnjf.jpg махіро-ояма мій-братик-вже-не-братик! 8 mahiro-oyama</i>
-
-                        Подія вказується відповідним числом. Транслітерацію імені вказувати англійською."""
+WRONG_FORMAT_TEXT = "❌️ Некоректний формат!\nФормат: <code>/upload</code> <i>посилання_на_картинку ім'я-няшки назва-аніме подія трансліт-імені</i>\n\nІм'я няші, назву аніме та транслітерацію писати через дефіс, наприклад:\n<code>/upload</code> <i>посилання-на-картинку махіро-ояма мій-братик-вже-не-братик! 8 mahiro-oyama</i>\n\nПодія вказується відповідним числом. Транслітерацію імені вказувати англійською."
 
 async def get_next_sequence_number(sequence_name):
     sequence_collection = db.sequences
@@ -34,7 +28,7 @@ async def upload(update: Update, context: CallbackContext) -> None:
     try:
         args = context.args
         if len(args) != 5:
-            await update.message.reply_text(WRONG_FORMAT_TEXT)
+            await update.message.reply_text(WRONG_FORMAT_TEXT, parse_mode = 'HTML')
             return
 
         character_name = args[1].replace('-', ' ').title()
