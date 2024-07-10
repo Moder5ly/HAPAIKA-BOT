@@ -107,7 +107,7 @@ async def send_image(update: Update, context: CallbackContext) -> None:
                      13: "⚪️ Звичайна"
                      }
     
-    character = random.choice([c for c in all_characters if c['id'] not in sent_characters[chat_id] and c['event'] == event_map[int(current_month)] or c['event'] == "⚪️ Звичайна"])
+    character = random.choice([c for c in all_characters if c['event'] == event_map[int(current_month)] or c['event'] == "⚪️ Звичайна"])
 
     sent_characters[chat_id].append(character['id'])
     last_characters[chat_id] = character
