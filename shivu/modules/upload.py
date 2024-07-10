@@ -82,7 +82,7 @@ async def upload(update: Update, context: CallbackContext) -> None:
 
         character = {
             'img_url': args[0],
-            'name': character_name + "" + event[0],
+            'name': character_name + " " + event[0],
             'name_translit': character_name_translit,
             'anime': anime,
 #           'rarity': rarity,
@@ -156,8 +156,10 @@ async def update(update: Update, context: CallbackContext) -> None:
             return
 
         # змінюємо поле
-        if args[1] in ['name', 'name_translit', 'anime']:
+        if args[1] in ['name', 'name_translit']:
             new_value = args[2].replace('-', ' ').title()
+        elif args[1] == 'anime':
+            new_value = args[2].replace('-', ' ').capitalize()
        # elif args[1] == 'rarity':
        #     rarity_map = {
        #              1: "⚪️ Звичайна", 
@@ -214,6 +216,14 @@ async def update(update: Update, context: CallbackContext) -> None:
             )
             character['message_id'] = message.message_id
             await collection.find_one_and_update({'id': args[0]}, {'$set': {'message_id': message.message_id}})
+        # якщо міняється івент
+        elif args[1] == 'event':
+            await context.bot.edit_message_caption(
+                chat_id = CHARA_CHANNEL_ID,
+                message_id = character['message_id'],
+                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Транслітерація імені:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event}\n\nОновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>\n\nНе забудьте оновити ім'я няшки, аби відповідала події!",
+                parse_mode = 'HTML'
+            )
         # якщо міняється щось інше
         else:           
             await context.bot.edit_message_caption(
