@@ -70,6 +70,11 @@ async def message_counter(update: Update, context: CallbackContext) -> None:
             await send_image(update, context)
             
             message_counts[chat_id] = 0
+
+        #ріп няші, якщо досягнуто половини повідомлень від частоти повідомлень
+        if message_frequency / message_counts[chat_id] == 0:
+            await kill_waifu(update, context)
+            
 # функція появи няшки            
 async def send_image(update: Update, context: CallbackContext) -> None:
     chat_id = update.effective_chat.id
@@ -98,6 +103,21 @@ async def send_image(update: Update, context: CallbackContext) -> None:
         caption = f"З'явилася няшка!\n\n<code>/guess</code> <i>ім'я/прізвище няшки</i>, аби додати до свого гарему.",
         parse_mode = 'HTML')
 
+# функція смерті
+async def kill_waifu(update: Update, context: CallbackContext) -> None:
+    chat_id = update.effective_chat.id
+
+    if chat_id not in last_characters:
+        return
+
+    first_correct_guesses[chat_id] = user_id
+
+    #виведення повідомлення
+    await context.bot.send_message(
+        chat_id = chat_id, 
+        text = f"❌️ Ой біда, няшка втекла, бо ніхто не встиг відгадати!\n\nЦе була <b>{last_characters[chat_id]['name']}</b>!\nТайтл: <b>{last_characters[chat_id]['anime']}</b>.", 
+         parse_mode = 'HTML')
+
 # функція відгадування
 async def guess(update: Update, context: CallbackContext) -> None:
     chat_id = update.effective_chat.id
@@ -107,7 +127,7 @@ async def guess(update: Update, context: CallbackContext) -> None:
         return
 
     if chat_id in first_correct_guesses:
-        await update.message.reply_text(f"❌️ Хтось уже відгадав її. Успіхів наступного разу!")
+        await update.message.reply_text(f"❌️ Няшку більше не можна залутати. Успіхів наступного разу!")
         return
 
     guess = ' '.join(context.args).lower() if context.args else ''
