@@ -110,7 +110,7 @@ async def kill_waifu(update: Update, context: CallbackContext) -> None:
     if chat_id not in last_characters:
         return
 
-    first_correct_guesses[chat_id] = user_id
+    first_correct_guesses[chat_id] = -1
 
     #виведення повідомлення
     await context.bot.send_message(
