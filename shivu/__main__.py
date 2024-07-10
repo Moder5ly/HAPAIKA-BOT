@@ -95,7 +95,7 @@ async def send_image(update: Update, context: CallbackContext) -> None:
     await context.bot.send_photo(
         chat_id = chat_id,
         photo = character['img_url'],
-        caption = f"З'явилася няшка!\n<code>/guess</code> <i>ім'я/прізвище няшки</i>, аби додати до свого гарему.",
+        caption = f"З'явилася няшка!\n\n<code>/guess</code> <i>ім'я/прізвище няшки</i>, аби додати до свого гарему.",
         parse_mode = 'HTML')
 
 # функція відгадування
@@ -181,9 +181,9 @@ async def guess(update: Update, context: CallbackContext) -> None:
                 'count': 1,
             })
        
-        keyboard = [[InlineKeyboardButton(f"Переглянути гарем", switch_inline_query_current_chat=f"collection.{user_id}")]]
+        keyboard = [[InlineKeyboardButton(f"Переглянути гарем", switch_inline_query_current_chat = f"collection.{user_id}")]]
 
-        await update.message.reply_text(f"<b><a href='tg://user?id={user_id}'>{escape(update.effective_user.first_name)}</a></b> відгадав/відгадала няшку!\n\nЦе <b>{last_characters[chat_id]['name']}</b> з {last_characters[chat_id]['anime']}.\n{last_characters[chat_id]['event']} версія!", parse_mode = 'HTML', reply_markup = InlineKeyboardMarkup(keyboard))
+        await update.message.reply_text(f"<b><a href='tg://user?id={user_id}'>{escape(update.effective_user.first_name)}</a></b> відгадав/відгадала няшку!\n\nЦе <b>{last_characters[chat_id]['name']}</b> з " + {last_characters[chat_id]['anime']} + ".", parse_mode = 'HTML', reply_markup = InlineKeyboardMarkup(keyboard))
 
     else:
         await update.message.reply_text('❌️ Неправильно!')
