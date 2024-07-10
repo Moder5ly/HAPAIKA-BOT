@@ -103,7 +103,7 @@ async def upload(update: Update, context: CallbackContext) -> None:
             await update.message.reply_text("✅ Няшку успішно додано!")
         except:
             await collection.insert_one(character)
-            update.message.reply_text("⚠️ Няшку додано, однак не знайдено Telegram-каналу бази даних.")
+            await update.message.reply_text("⚠️ Няшку додано, однак не знайдено Telegram-каналу бази даних.")
         
     except Exception as e:
         await update.message.reply_text(f"❌️ Не вдалося завантажити няшку. Помилка: {str(e)}\nЯкщо ви вважаєте, що помилка в коді, зверніться до адмінів бота у {SUPPORT_CHAT}", parse_mode = 'HTML')
