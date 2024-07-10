@@ -115,7 +115,7 @@ async def kill_waifu(update: Update, context: CallbackContext) -> None:
     #виведення повідомлення
     await context.bot.send_message(
         chat_id = chat_id, 
-        text = f"❌️ Ой біда, няшка втекла, бо ніхто не встиг відгадати!\n\nЦе була <code><b>{last_characters[chat_id]['name'][:-2]}</b>, {last_characters[chat_id]['event']} версія!</code>\nТайтл: <code><b>{last_characters[chat_id]['anime']}</b></code>.", 
+        text = f"❌️ Ой біда, няшка втекла, бо ніхто не встиг відгадати!\n\nЦе була <code><b>{last_characters[chat_id]['name'][:-2]}</b></code>, {last_characters[chat_id]['event']} версія!\nТайтл: <code><b>{last_characters[chat_id]['anime']}</b></code>.", 
          parse_mode = 'HTML')
 
 # функція відгадування
