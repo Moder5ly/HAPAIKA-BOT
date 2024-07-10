@@ -72,7 +72,7 @@ async def message_counter(update: Update, context: CallbackContext) -> None:
             message_counts[chat_id] = 0
 
         #ріп няші, якщо досягнуто половини повідомлень від частоти повідомлень
-        if message_frequency / message_counts[chat_id] == 0:
+        if  message_counts[chat_id] != 0 and message_frequency / message_counts[chat_id] == 0:
             await kill_waifu(update, context)
             
 # функція появи няшки            
