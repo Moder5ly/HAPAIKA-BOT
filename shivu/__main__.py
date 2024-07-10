@@ -96,7 +96,7 @@ async def send_image(update: Update, context: CallbackContext) -> None:
         chat_id = chat_id,
         photo = character['img_url'],
         caption = f"З'явилася няшка!\n<code>/guess</code> <i>ім'я/прізвище няшки</i>, аби додати до свого гарему.",
-        parse_mode = 'Markdown')
+        parse_mode = 'HTML')
 
 # функція відгадування
 async def guess(update: Update, context: CallbackContext) -> None:
