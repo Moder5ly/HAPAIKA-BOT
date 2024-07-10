@@ -124,7 +124,7 @@ async def delete(update: Update, context: CallbackContext) -> None:
 
         if character:
             
-            await context.bot.delete_message(chat_id = CHARA_CHANNEL_ID, message_id = character['message_id'])
+            #await context.bot.delete_message(chat_id = CHARA_CHANNEL_ID, message_id = character['message_id'])
             await update.message.reply_text("✅ ГОТОВО")
         else:
             await update.message.reply_text("✅ Няшку успішно видалено з бази даних, але не знайдено в каналі.")
