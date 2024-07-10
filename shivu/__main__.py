@@ -115,7 +115,7 @@ async def kill_waifu(update: Update, context: CallbackContext) -> None:
     #виведення повідомлення
     await context.bot.send_message(
         chat_id = chat_id, 
-        text = f"❌️ Ой біда, няшка втекла, бо ніхто не встиг відгадати!\n\nЦе була <b>{last_characters[chat_id]['name']}</b>!\nТайтл: <b>{last_characters[chat_id]['anime']}</b>.", 
+        text = f"❌️ Ой біда, няшка втекла, бо ніхто не встиг відгадати!\n\nЦе була <code><b>{last_characters[chat_id]['name'][:-2]}</b>, {last_characters[chat_id]['event']} версія!</code>\nТайтл: <code><b>{last_characters[chat_id]['anime']}</b></code>.", 
          parse_mode = 'HTML')
 
 # функція відгадування
@@ -203,7 +203,7 @@ async def guess(update: Update, context: CallbackContext) -> None:
        
         keyboard = [[InlineKeyboardButton(f"Переглянути гарем", switch_inline_query_current_chat = f"collection.{user_id}")]]
 
-        await update.message.reply_text(f"<b><a href='tg://user?id={user_id}'>{escape(update.effective_user.first_name)}</a></b> відгадав/відгадала няшку!\n\nЦе <b>{last_characters[chat_id]['name']}</b>!\nТайтл: <b>{last_characters[chat_id]['anime']}</b>.", parse_mode = 'HTML', reply_markup = InlineKeyboardMarkup(keyboard))
+        await update.message.reply_text(f"<b><a href='tg://user?id={user_id}'>{escape(update.effective_user.first_name)}</a></b> відгадав/відгадала няшку!\n\nЦе <b>{last_characters[chat_id]['name']}</b>!\nТайтл: <code><b>{last_characters[chat_id]['anime']}</b></code>.", parse_mode = 'HTML', reply_markup = InlineKeyboardMarkup(keyboard))
 
     else:
         await update.message.reply_text('❌️ Неправильно!')
