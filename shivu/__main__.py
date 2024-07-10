@@ -91,7 +91,23 @@ async def send_image(update: Update, context: CallbackContext) -> None:
 
     #тут вибирається няша з усієї бази
     current_month = datetime.now().month
-    character = random.choice([c for c in all_characters if c['id'] not in sent_characters[chat_id] and c['event'] == current_month or c['event'] == 13])
+    event_map =  {
+                     1: "🐾 Твариноподібна", 
+                     2: "👘 Східна", 
+                     3: "🎉 Знаменна", 
+                     4: "🐰 Великодня",
+                     5: "👯‍♂️ Парна",
+                     6: "🌈 Статезмінна",
+                     7: "🏖️ Пляжна",
+                     8: "🧹 Покоївкова",
+                     9: "👩‍🏫 Шкільна",
+                     10: "🎃 Геловінська",
+                     11: "🍔 Гамбургерна",
+                     12: "🎄 Різдвяна",
+                     13: "⚪️ Звичайна"
+                     }
+    
+    character = random.choice([c for c in all_characters if c['id'] not in sent_characters[chat_id] and c['event'] == event_map[int(current_month)] or c['event'] == "⚪️ Звичайна"])
 
     sent_characters[chat_id].append(character['id'])
     last_characters[chat_id] = character
