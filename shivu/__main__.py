@@ -14,6 +14,8 @@ from shivu import collection, top_global_groups_collection, group_user_totals_co
 from shivu import application, SUPPORT_CHAT, UPDATE_CHAT, db, LOGGER
 from shivu.modules import ALL_MODULES
 
+from datetime import datetime
+
 locks = {}
 message_counters = {}
 spam_counters = {}
@@ -79,7 +81,7 @@ async def message_counter(update: Update, context: CallbackContext) -> None:
 async def send_image(update: Update, context: CallbackContext) -> None:
     chat_id = update.effective_chat.id
 
-    all_characters = list(await collection.find({}).to_list(length=None))
+    all_characters = list(await collection.find({}).to_list(length = None))
     
     if chat_id not in sent_characters:
         sent_characters[chat_id] = []
@@ -88,7 +90,8 @@ async def send_image(update: Update, context: CallbackContext) -> None:
         sent_characters[chat_id] = []
 
     #тут вибирається няша з усієї бази
-    character = random.choice([c for c in all_characters if c['id'] not in sent_characters[chat_id]])
+    current_month = datetime.now().month
+    character = random.choice([c for c in all_characters if c['id'] not in sent_characters[chat_id] and c['event'] == current_month or c['event'] == 13])
 
     sent_characters[chat_id].append(character['id'])
     last_characters[chat_id] = character
