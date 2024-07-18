@@ -80,10 +80,18 @@ async def upload(update: Update, context: CallbackContext) -> None:
             return
 
         id = str(await get_next_sequence_number('character_id')).zfill(2)
-
+        event_map =  {
+            0: "⚪️ Звичайна", 
+            1: "🎄 Різдвяна", 
+            4: "🧹 Покоївкова", 
+            7: "🏖️ Пляжна"",
+            10: "🎃 Геловінська",
+            13: "🎳 Гуртівківент",
+        }
+        
         character = {
             'img_url': args[0],
-            'name': character_name + " " + event[0],
+            'name': character_name + " " + event_map[event][0],
             'name_translit': character_name_translit,
             'anime': anime,
 #           'rarity': rarity,
