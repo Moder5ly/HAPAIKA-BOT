@@ -90,7 +90,7 @@ async def upload(update: Update, context: CallbackContext) -> None:
         
         character = {
             'img_url': args[0],
-            'name': character_name + " " + event_map[int(event)],
+            'name': character_name + " " + event_map[int(event)][0],
             #'name': character_name,
             'name_translit': character_name_translit,
             'anime': anime,
