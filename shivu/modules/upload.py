@@ -33,6 +33,7 @@ async def upload(update: Update, context: CallbackContext) -> None:
 
         character_name = args[1].replace('-', ' ').title()
         anime = args[2].replace('-', ' ').capitalize()
+        event = args[3]
         character_name_translit = args[4].replace('-', ' ').title()
 
         try:
@@ -72,7 +73,7 @@ async def upload(update: Update, context: CallbackContext) -> None:
 #                     12: "🎄 Різдвяна",
 #                     13: "⚪️ Звичайна"
 #                     }
-        event = args[3]
+        
         #except KeyError:
         #    await update.message.reply_text("❌️ Неправильна подія. Вкажіть подію, залежно від місяця:\n\n0: ⚪️ Звичайна\n1 (січень): 🎄 Різдвяна\n4 (квітень): 🧹 Покоївкова\n7 (липень): 🏖️ Пляжна\n10 (жовтень): 🎃 Геловінська\n13: 🎳 Гуртівківент", parse_mode = 'HTML')
         #    return
@@ -89,7 +90,8 @@ async def upload(update: Update, context: CallbackContext) -> None:
         
         character = {
             'img_url': args[0],
-            'name': character_name + " " + event_map[event],
+            #'name': character_name + " " + event_map[int(event)],
+            'name': character_name,
             'name_translit': character_name_translit,
             'anime': anime,
 #           'rarity': rarity,
