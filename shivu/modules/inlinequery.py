@@ -87,7 +87,7 @@ async def inlinequery(update: Update, context: CallbackContext) -> None:
             caption = f"Гляньте-но на няшку <a href='tg://user?id={user['id']}'>{(escape(user.get('first_name', user['id'])))}</a>!\n\n<b>{character['anime']}</b>\n{character['id']}. {character['name']} (x{user_character_count})\n{event_map[int(character['event'])]} версія"
         else:
             #caption = f"<b>Гляньте-но на цю няшку!</b>\n\n🌸:<b> {character['name']}</b>\n🏖️: <b>{character['anime']}</b>\n<b>{character['rarity']}</b>\n🆔️: <b>{character['id']}</b>\n\n<b>Вгадано глобально: {global_count} разів.</b>"
-            caption = f"<b>Гляньте-но на цю няшку!</b>\n\n<b>{character['anime']}</b>\n{character['id']}. {character['name']}\n{event_map[int(character['event'])] версія"
+            caption = f"<b>Гляньте-но на цю няшку!</b>\n\n<b>{character['anime']}</b>\n{character['id']}. {character['name']}\n{event_map[int(character['event'])]} версія"
         results.append(
             InlineQueryResultPhoto(
                 thumbnail_url = character['img_url'],
