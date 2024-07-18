@@ -6,7 +6,7 @@ from telegram.ext import CommandHandler, CallbackContext
 
 from shivu import application, sudo_users, collection, db, CHARA_CHANNEL_ID, SUPPORT_CHAT
 
-WRONG_FORMAT_TEXT = "❌️ Неправильний формат!\nФормат: <code>/upload</code> <i>посилання_на_картинку ім'я-няшки назва-аніме подія трансліт-імені</i>\n\nІм'я няші, назву аніме та транслітерацію писати через дефіс, наприклад:\n<code>/upload</code> <i>посилання-на-картинку махіро-ояма мій-братик-вже-не-братик! 8 mahiro-oyama</i>\n\nПодія вказується відповідним числом. Транслітерацію імені вказувати англійською."
+WRONG_FORMAT_TEXT = "❌️ Неправильний формат!\nФормат: <code>/upload</code> <i>посилання_на_картинку ім'я-няшки назва-аніме подія теґи</i>\n\nІм'я няші, назву аніме та теґи писати через дефіс, наприклад:\n<code>/upload</code> <i>посилання-на-картинку махіро-ояма мій-братик-вже-не-братик! 8 mahiro-oyama</i>\n\nПодія вказується відповідним числом. Транслітерацію імені вказувати англійською."
 
 async def get_next_sequence_number(sequence_name):
     sequence_collection = db.sequences
