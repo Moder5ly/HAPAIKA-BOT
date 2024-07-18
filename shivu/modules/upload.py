@@ -76,7 +76,7 @@ async def upload(update: Update, context: CallbackContext) -> None:
             #event = event_map[int(args[3])]
             event = args[3]
         except KeyError:
-            await update.message.reply_text("❌️ Неправильна подія. Вкажіть подію, залежно від місяця:\n\n0: ⚪️ Звичайна\n1 (січень): 🎄 Різдвяна\n2 (квітень): 🧹 Покоївкова\n3 (липень): 🏖️ Пляжна\n4 (жовтень): 🎃 Геловінська\n5: 🎳 Гуртівківент", parse_mode = 'HTML')
+            await update.message.reply_text("❌️ Неправильна подія. Вкажіть подію, залежно від місяця:\n\n0: ⚪️ Звичайна\n1 (січень): 🎄 Різдвяна\n4 (квітень): 🧹 Покоївкова\n7 (липень): 🏖️ Пляжна\n10 (жовтень): 🎃 Геловінська\n13: 🎳 Гуртівківент", parse_mode = 'HTML')
             return
 
         id = str(await get_next_sequence_number('character_id')).zfill(2)
@@ -199,7 +199,7 @@ async def update(update: Update, context: CallbackContext) -> None:
 #                new_value = event_map[int(args[2])]
                 new_value = args[2]
             except KeyError:
-                await update.message.reply_text("❌️ Неправильна подія. Вкажіть подію, залежно від місяця:\n\n0: ⚪️ Звичайна\n1 (січень): 🎄 Різдвяна\n2 (квітень): 🧹 Покоївкова\n3 (липень): 🏖️ Пляжна\n4 (жовтень): 🎃 Геловінська\n5: 🎳 Гуртівківент", parse_mode = 'HTML')
+                await update.message.reply_text("❌️ Неправильна подія. Вкажіть подію, залежно від місяця:\n\n0: ⚪️ Звичайна\n1 (січень): 🎄 Різдвяна\n4 (квітень): 🧹 Покоївкова\n7 (липень): 🏖️ Пляжна\n10 (жовтень): 🎃 Геловінська\n13: 🎳 Гуртівківент", parse_mode = 'HTML')
                 return
         else:
             new_value = args[2]
