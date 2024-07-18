@@ -91,23 +91,8 @@ async def send_image(update: Update, context: CallbackContext) -> None:
 
     #тут вибирається няша з усієї бази
     current_month = datetime.now().month
-#    event_map =  {
-#                     1: "🐾 Твариноподібна", 
-#                     2: "👘 Східна", 
-#                     3: "🎉 Знаменна", 
-#                     4: "🐰 Великодня",
-#                     5: "👯‍♂️ Парна",
-#                     6: "🌈 Статезмінна",
-#                     7: "🏖️ Пляжна",
-#                     8: "🧹 Покоївкова",
-#                     9: "👩‍🏫 Шкільна",
-#                     10: "🎃 Геловінська",
-#                     11: "🍔 Гамбургерна",
-#                     12: "🎄 Різдвяна",
-#                     13: "⚪️ Звичайна"
-#                     }
     
-    character = random.choice([c for c in all_characters if c['event'] == current_month or c['event'] == "0"])
+    character = random.choice([c for c in all_characters if int(c['event']) == int(current_month) or c['event'] == "0"])
 
     sent_characters[chat_id].append(character['id'])
     last_characters[chat_id] = character
@@ -128,15 +113,19 @@ async def kill_waifu(update: Update, context: CallbackContext) -> None:
 
     if chat_id not in last_characters:
         return
-
-    first_correct_guesses[chat_id] = -1
-    sent_characters[chat_id] = []
+        
+    if chat_id not in first_correct_guesses:
+        first_correct_guesses[chat_id] = -1
+        sent_characters[chat_id] = []
 
     #виведення повідомлення
-    await context.bot.send_message(
-        chat_id = chat_id, 
-        text = f"❌️ Ой біда, няшка втекла, бо ніхто не встиг відгадати!\n\nЦе була <code><b>{last_characters[chat_id]['name']}</b></code>\nТайтл: <code><b>{last_characters[chat_id]['anime']}</b></code>.", 
-         parse_mode = 'HTML')
+        await context.bot.send_message(
+            chat_id = chat_id, 
+            text = f"❌️ Ой біда, няшка втекла, бо ніхто не встиг відгадати!\n\nЦе була <code><b>{last_characters[chat_id]['name']}</b></code>\nТайтл: <code><b>{last_characters[chat_id]['anime']}</b></code>.", 
+             parse_mode = 'HTML')
+    else:
+        first_correct_guesses[chat_id] = -1
+        sent_characters[chat_id] = []
 
 # функція відгадування
 async def guess(update: Update, context: CallbackContext) -> None:
