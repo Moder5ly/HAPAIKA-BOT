@@ -104,7 +104,7 @@ async def upload(update: Update, context: CallbackContext) -> None:
             message = await context.bot.send_photo(
                 chat_id = CHARA_CHANNEL_ID,
                 photo = args[0],
-                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Транслітерація імені:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event}\n\nДодано користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
+                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Теґи:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event_map[int(event)]}\n\nДодано користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
                 parse_mode = 'HTML'
             )
             character['message_id'] = message.message_id
@@ -195,13 +195,22 @@ async def update(update: Update, context: CallbackContext) -> None:
         await collection.find_one_and_update({'id': args[0]}, {'$set': {args[1]: new_value}})
 
 # Виведення інформації про оновлення в канал Хапайки
+        event_map =  {
+            0: "⚪️ Звичайна", 
+            1: "🎄 Різдвяна", 
+            4: "🧹 Покоївкова", 
+            7: "🏖️ Пляжна",
+            10: "🎃 Геловінська",
+            13: "🎳 Гуртівківент",
+        }
+        
         # якщо міняється картинка
         if args[1] == 'img_url':
             await context.bot.delete_message(chat_id = CHARA_CHANNEL_ID, message_id = character['message_id'])
             message = await context.bot.send_photo(
                 chat_id = CHARA_CHANNEL_ID,
                 photo = new_value,
-                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Транслітерація імені:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event}\n\nОновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
+                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Теґи:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event_map[int(event)]}\n\nОновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
                 parse_mode = 'HTML'
             )
             character['message_id'] = message.message_id
@@ -211,7 +220,7 @@ async def update(update: Update, context: CallbackContext) -> None:
             await context.bot.edit_message_caption(
                 chat_id = CHARA_CHANNEL_ID,
                 message_id = character['message_id'],
-                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Транслітерація імені:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event}\n\nОновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>\n\nНе забудьте оновити ім'я няшки, аби відповідала події!",
+                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Теґи:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event_map[int(event)]}\n\nОновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>\n\nНе забудьте оновити ім'я няшки, аби відповідала події!",
                 parse_mode = 'HTML'
             )
         # якщо міняється щось інше
@@ -219,7 +228,7 @@ async def update(update: Update, context: CallbackContext) -> None:
             await context.bot.edit_message_caption(
                 chat_id = CHARA_CHANNEL_ID,
                 message_id = character['message_id'],
-                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Транслітерація імені:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event}\n\nОновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
+                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Теґи:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event_map[int(event)]}\n\nОновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
                 parse_mode = 'HTML'
             )
 
