@@ -74,7 +74,7 @@ async def upload(update: Update, context: CallbackContext) -> None:
 #                     }
         try:
             #event = event_map[int(args[3])]
-            event = int(args[3])
+            event = args[3]
         except KeyError:
             await update.message.reply_text("❌️ Неправильна подія. Вкажіть подію, залежно від місяця:\n\n0: ⚪️ Звичайна\n1 (січень): 🎄 Різдвяна\n2 (квітень): 🧹 Покоївкова\n3 (липень): 🏖️ Пляжна\n4 (жовтень): 🎃 Геловінська\n5: 🎳 Гуртівківент", parse_mode = 'HTML')
             return
@@ -197,7 +197,7 @@ async def update(update: Update, context: CallbackContext) -> None:
 #                     }
             try:
 #                new_value = event_map[int(args[2])]
-                new_value = int(args[2])
+                new_value = args[2]
             except KeyError:
                 await update.message.reply_text("❌️ Неправильна подія. Вкажіть подію, залежно від місяця:\n\n0: ⚪️ Звичайна\n1 (січень): 🎄 Різдвяна\n2 (квітень): 🧹 Покоївкова\n3 (липень): 🏖️ Пляжна\n4 (жовтень): 🎃 Геловінська\n5: 🎳 Гуртівківент", parse_mode = 'HTML')
                 return
