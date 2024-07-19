@@ -55,7 +55,7 @@ async def trade(client, message):
         ]
     )
 
-    await message.reply_text(f"{message.reply_to_message.from_user.mention}, чи приймаєте ви цей обмін?", reply_markup = keyboard)
+    await message.reply_text(f"{message.reply_to_message.from_user.mention}, чи приймаєте ви цей обмін?\n\n{receiver_character['name']} на {sender_character['name']}", reply_markup = keyboard)
 
 
 @shivuu.on_callback_query(filters.create(lambda _, __, query: query.data in ["confirm_trade", "cancel_trade"]))
@@ -176,4 +176,4 @@ async def on_callback_query(client, callback_query):
  
         del pending_gifts[(sender_id, receiver_id)]
 
-        await callback_query.message.edit_text(f"✅ Ви успішно подарували няшку користувачеві [{gift['receiver_first_name']}](tg://user?id={receiver_id})!")
+        await callback_query.message.edit_text(f"✅ Успішно подарувано няшку користувачеві [{gift['receiver_first_name']}](tg://user?id={receiver_id})!")
