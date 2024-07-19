@@ -194,7 +194,7 @@ async def update(update: Update, context: CallbackContext) -> None:
                 parse_mode = 'HTML'
             )
             character['message_id'] = message.message_id
-            console.log(character['message_id'] + " " + message.message_id)
+            LOGGER.info(character['message_id'] + type(character['message_id']) + " " + message.message_id + type(message.message_id))
             await collection.find_one_and_update({'id': args[0]}, {'$set': {'message_id': message.message_id}})
         # якщо міняється івент
         elif args[1] == 'event':
@@ -204,7 +204,7 @@ async def update(update: Update, context: CallbackContext) -> None:
                 caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Теґи:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event_map[int(event)]}\n\nОновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>\n\nНе забудьте оновити ім'я няшки, аби відповідала події!",
                 parse_mode = 'HTML'
             )
-            console.log(character['message_id'])
+            LOGGER.info(character['message_id'] + " " + type(character['message_id']))
         # якщо міняється щось інше
         else:           
             await context.bot.edit_message_caption(
@@ -213,7 +213,7 @@ async def update(update: Update, context: CallbackContext) -> None:
                 caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Теґи:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event_map[int(event)]}\n\nОновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
                 parse_mode = 'HTML'
             )
-            console.log(character['message_id'])
+            LOGGER.info(character['message_id'] + " " + type(character['message_id']))
 
         await update.message.reply_text("✅ Завершено оновлення в базі даних. Однак іноді потрібен час, щоби оновити опис у вашому чаті, тому зачекайте.")
     except Exception as e:
