@@ -75,7 +75,8 @@ async def upload(update: Update, context: CallbackContext) -> None:
             'anime': anime,
 #           'rarity': rarity,
             'event': event,
-            'id': id
+            'id': id,
+            'message_id' : 0
         }
 
         # Виведення інформації про додавання в канал Хапайки
