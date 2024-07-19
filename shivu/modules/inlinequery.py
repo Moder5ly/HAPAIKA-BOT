@@ -31,7 +31,7 @@ async def inlinequery(update: Update, context: CallbackContext) -> None:
 
     # Якщо шукаємо в гаремі юзера
     if query.startswith('collection.'):
-        user_id, *search_terms = query.split(' ')[0].split('.')[1].split('&'), ' '.join(query.split(' ')[1:])
+        user_id, *search_terms = query.split(' ')[0].split('.')[1], ' '.join(query.split(' ')[1:])
         if user_id.isdigit():
             if user_id in user_collection_cache:
                 user = user_collection_cache[user_id]
