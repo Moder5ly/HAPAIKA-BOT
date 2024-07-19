@@ -50,8 +50,8 @@ async def trade(client, message):
    
     keyboard = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton("Підтвердити", callback_data = "confirm_trade")],
-            [InlineKeyboardButton("Скасувати", callback_data = "cancel_trade")]
+            [InlineKeyboardButton("✅ Підтвердити", callback_data = "confirm_trade")],
+            [InlineKeyboardButton("❌️ Скасувати", callback_data = "cancel_trade")]
         ]
     )
 
@@ -66,7 +66,7 @@ async def on_callback_query(client, callback_query):
         if _receiver_id == receiver_id:
             break
     else:
-        await callback_query.answer("Це не ваш обмін!", show_alert = True)
+        await callback_query.answer("❌️ Це не ваш обмін!", show_alert = True)
         return
 
     if callback_query.data == "confirm_trade":       
@@ -90,7 +90,7 @@ async def on_callback_query(client, callback_query):
 
         del pending_trades[(sender_id, receiver_id)]
 
-        await callback_query.message.edit_text(f"Обмін із {callback_query.message.reply_to_message.from_user.mention} успішно проведено!")
+        await callback_query.message.edit_text(f"✅ Обмін із {callback_query.message.reply_to_message.from_user.mention} успішно проведено!")
 
     elif callback_query.data == "cancel_trade":
         del pending_trades[(sender_id, receiver_id)]
@@ -127,7 +127,9 @@ async def gift(client, message):
     if not character:
         await message.reply_text("❌️ У твоїй колекції немає такого персонажа!")
         return
- 
+
+    character_name = character['name']
+    
     pending_gifts[(sender_id, receiver_id)] = {
         'character': character,
         'receiver_username': receiver_username,
@@ -136,12 +138,12 @@ async def gift(client, message):
 
     keyboard = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton("Підтвердити", callback_data = "confirm_gift")],
-            [InlineKeyboardButton("Скасувати", callback_data = "cancel_gift")]
+            [InlineKeyboardButton("✅ Підтвердити", callback_data = "confirm_gift")],
+            [InlineKeyboardButton("❌️ Скасувати", callback_data = "cancel_gift")]
         ]
     )
 
-    await message.reply_text(f"Ви бажаєте подарувати {message.reply_to_message.from_user.mention}?", reply_markup = keyboard)
+    await message.reply_text(f"Ви бажаєте подарувати {character_name} користувачеві {message.reply_to_message.from_user.mention}?", reply_markup = keyboard)
 
 @shivuu.on_callback_query(filters.create(lambda _, __, query: query.data in ["confirm_gift", "cancel_gift"]))
 async def on_callback_query(client, callback_query):
@@ -151,7 +153,7 @@ async def on_callback_query(client, callback_query):
         if _sender_id == sender_id:
             break
     else:
-        await callback_query.answer("This is not for you!", show_alert=True)
+        await callback_query.answer("❌️ Це не ваш дарунок!", show_alert = True)
         return
 
     if callback_query.data == "confirm_gift":
@@ -174,4 +176,4 @@ async def on_callback_query(client, callback_query):
  
         del pending_gifts[(sender_id, receiver_id)]
 
-        await callback_query.message.edit_text(f"Ви успішно подарували няшку користувачеві [{gift['receiver_first_name']}](tg://user?id={receiver_id})!")
+        await callback_query.message.edit_text(f"✅ Ви успішно подарували няшку користувачеві [{gift['receiver_first_name']}](tg://user?id={receiver_id})!")
