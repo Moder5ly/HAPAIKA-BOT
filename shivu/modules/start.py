@@ -16,10 +16,7 @@ async def start(update: Update, context: CallbackContext) -> None:
 
     if user_data is None:        
         await collection.insert_one({"_id": user_id, "first_name": first_name, "username": username})   
-        await context.bot.send_message(chat_id = GROUP_ID, 
-                                       text = f"Новий користувач запустив бота.\nКористувач: <a href='tg://user?id={user_id}'>{escape(first_name)})</a>", 
-                                       parse_mode = 'HTML')
-    else:    
+            else:    
         if user_data['first_name'] != first_name or user_data['username'] != username: 
             await collection.update_one({"_id": user_id}, {"$set": {"first_name": first_name, "username": username}})
 
@@ -30,8 +27,6 @@ async def start(update: Update, context: CallbackContext) -> None:
         
         keyboard = [
             [InlineKeyboardButton("ДОДАТИ ДО ЧАТУ", url = f'http://t.me/{BOT_USERNAME}?startgroup=new')],
-            [InlineKeyboardButton("ПІДТРИМКА", url = f'https://t.me/{SUPPORT_CHAT}'),
-            InlineKeyboardButton("ОНОВЛЕННЯ", url = f'https://t.me/{UPDATE_CHAT}')],
             [InlineKeyboardButton("КОМАНДИ БОТА", callback_data = 'help')],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -43,8 +38,6 @@ async def start(update: Update, context: CallbackContext) -> None:
         photo_url = random.choice(PHOTO_URL)
         keyboard = [
             [InlineKeyboardButton("ДОДАТИ ДО ЧАТУ", url = f'http://t.me/{BOT_USERNAME}?startgroup=new')],
-            [InlineKeyboardButton("ПІДТРИМКА", url = f'https://t.me/{SUPPORT_CHAT}'),
-            InlineKeyboardButton("ОНОВЛЕННЯ", url = f'https://t.me/{UPDATE_CHAT}')],
             [InlineKeyboardButton("КОМАНДИ БОТА", callback_data = 'help')],
         ]
         
@@ -76,8 +69,6 @@ async def button(update: Update, context: CallbackContext) -> None:
     
         keyboard = [
             [InlineKeyboardButton("ДОДАТИ ДО ЧАТУ", url = f'http://t.me/{BOT_USERNAME}?startgroup=new')],
-            [InlineKeyboardButton("ПІДТРИМКА", url = f'https://t.me/{SUPPORT_CHAT}'),
-            InlineKeyboardButton("ОНОВЛЕННЯ", url = f'https://t.me/{UPDATE_CHAT}')],
             [InlineKeyboardButton("КОМАНДИ БОТА", callback_data = 'help')],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
