@@ -15,15 +15,12 @@ class Config(object):
     OWNER_ID = "342536463"
     # ID адмінів бота
     sudo_users = "342536463", "5977032096", "6759307389"
-    # канал, куди надсилаються логи про додавання і оновлення няшок
-    CHARA_CHANNEL_ID = "-1002224770278"
     # чат-лог про нових юзерів
-    GROUP_ID = -2106637387
+    #GROUP_ID = -2106637387
     # чат підтримки юзерів
-    SUPPORT_CHAT = "hurtivka"
+    #SUPPORT_CHAT = "hurtivka"
     # чат (канал?) куди шлються оновлення бота
-    UPDATE_CHAT = "hurtivka"
-
+    #UPDATE_CHAT = "hurtivka"
 
 class Production(Config):
     LOGGER = True
