@@ -216,9 +216,9 @@ async def update(update: Update, context: CallbackContext) -> None:
     except Exception as e:
         await update.message.reply_text(f"❌️ Схоже, бота не додано до чату, або такої няшки не існує, або неправильний id няшки.")
 
-UPLOAD_HANDLER = CommandHandler('upload', upload, block = False)
+UPLOAD_HANDLER = CommandHandler('upload', upload, block = True)
 application.add_handler(UPLOAD_HANDLER)
-DELETE_HANDLER = CommandHandler('delete', delete, block = False)
+DELETE_HANDLER = CommandHandler('delete', delete, block = True)
 application.add_handler(DELETE_HANDLER)
 UPDATE_HANDLER = CommandHandler('update', update, block=False)
 application.add_handler(UPDATE_HANDLER)
