@@ -6,22 +6,22 @@ from telegram import Update
 from telegram.ext import CommandHandler, CallbackContext
 
 from shivu import (application, PHOTO_URL, OWNER_ID,
-                    user_collection, top_global_groups_collection, top_global_groups_collection, 
-                    group_user_totals_collection)
+                   db_user_collections, db_top_global_groups, db_top_global_groups,
+                   db_group_user_totals)
 
 from shivu import sudo_users as SUDO_USERS 
 
     
 async def global_leaderboard(update: Update, context: CallbackContext) -> None:
     
-    cursor = top_global_groups_collection.aggregate([
+    cursor = db_top_global_groups.aggregate([
         {"$project": {"group_name": 1, "count": 1}},
         {"$sort": {"count": -1}},
         {"$limit": 10}
     ])
     leaderboard_data = await cursor.to_list(length=10)
 
-    leaderboard_message = "<b>10 ЧАТІВ ЗА КІЛЬКІСТЮ ВІДГАДАНИХ НЯШОК</b>\n\n"
+    leaderboard_message = "<b>TOP 10 GROUPS WHO GUESSED MOST CHARACTERS</b>\n\n"
 
     for i, group in enumerate(leaderboard_data, start=1):
         group_name = html.escape(group.get('group_name', 'Unknown'))
@@ -39,7 +39,7 @@ async def global_leaderboard(update: Update, context: CallbackContext) -> None:
 async def ctop(update: Update, context: CallbackContext) -> None:
     chat_id = update.effective_chat.id
 
-    cursor = group_user_totals_collection.aggregate([
+    cursor = db_group_user_totals.aggregate([
         {"$match": {"group_id": chat_id}},
         {"$project": {"username": 1, "first_name": 1, "character_count": "$count"}},
         {"$sort": {"character_count": -1}},
@@ -47,7 +47,7 @@ async def ctop(update: Update, context: CallbackContext) -> None:
     ])
     leaderboard_data = await cursor.to_list(length=10)
 
-    leaderboard_message = "<b>10 КОРИСТУВАЧІВ ЧАТУ ЗА КІЛЬКІСТЮ ВІДГАДАНИХ НЯШОК</b>\n\n"
+    leaderboard_message = "<b>TOP 10 USERS WHO GUESSED CHARACTERS MOST TIME IN THIS GROUP..</b>\n\n"
 
     for i, user in enumerate(leaderboard_data, start=1):
         username = user.get('username', 'Unknown')
@@ -65,7 +65,7 @@ async def ctop(update: Update, context: CallbackContext) -> None:
 
 async def leaderboard(update: Update, context: CallbackContext) -> None:
     
-    cursor = user_collection.aggregate([
+    cursor = db_user_collections.aggregate([
         {"$project": {"username": 1, "first_name": 1, "character_count": {"$size": "$characters"}}},
         {"$sort": {"character_count": -1}},
         {"$limit": 10}
@@ -93,26 +93,26 @@ async def leaderboard(update: Update, context: CallbackContext) -> None:
 async def stats(update: Update, context: CallbackContext) -> None:
     
     if update.effective_user.id != OWNER_ID:
-        await update.message.reply_text("❌ Вам не дозволено користуватися цією командою.")
+        await update.message.reply_text("You are not authorized to use this command.")
         return
 
     
-    user_count = await user_collection.count_documents({})
+    user_count = await db_user_collections.count_documents({})
 
 
-    group_count = await group_user_totals_collection.distinct('group_id')
+    group_count = await db_group_user_totals.distinct('group_id')
 
 
-    await update.message.reply_text(f'Загалом користувачів: {user_count}\nЗагалом чатів: {len(group_count)}')
+    await update.message.reply_text(f'Total Users: {user_count}\nTotal groups: {len(group_count)}')
 
 
 
 
 async def send_users_document(update: Update, context: CallbackContext) -> None:
     if str(update.effective_user.id) not in SUDO_USERS:
-        update.message.reply_text('⚠️ Ця команда лише для адмінів бота.')
+        update.message.reply_text('only For Sudo users...')
         return
-    cursor = user_collection.find({})
+    cursor = db_user_collections.find({})
     users = []
     async for document in cursor:
         users.append(document)
@@ -127,9 +127,9 @@ async def send_users_document(update: Update, context: CallbackContext) -> None:
 
 async def send_groups_document(update: Update, context: CallbackContext) -> None:
     if str(update.effective_user.id) not in SUDO_USERS:
-        update.message.reply_text('⚠️ Ця команда лише для адмінів бота.')
+        update.message.reply_text('Only For Sudo users...')
         return
-    cursor = top_global_groups_collection.find({})
+    cursor = db_top_global_groups.find({})
     groups = []
     async for document in cursor:
         groups.append(document)
@@ -144,13 +144,13 @@ async def send_groups_document(update: Update, context: CallbackContext) -> None
     os.remove('groups.txt')
 
 
-application.add_handler(CommandHandler('ctop', ctop, block=False))
-application.add_handler(CommandHandler('stats', stats, block=False))
-application.add_handler(CommandHandler('TopGroups', global_leaderboard, block=False))
+#application.add_handler(CommandHandler('ctop', ctop, block=False))
+#application.add_handler(CommandHandler('stats', stats, block=False))
+#application.add_handler(CommandHandler('TopGroups', global_leaderboard, block=False))
 
-application.add_handler(CommandHandler('list', send_users_document, block=False))
-application.add_handler(CommandHandler('groups', send_groups_document, block=False))
+#application.add_handler(CommandHandler('list', send_users_document, block=False))
+#application.add_handler(CommandHandler('groups', send_groups_document, block=False))
 
 
-application.add_handler(CommandHandler('top', leaderboard, block=False))
+#application.add_handler(CommandHandler('top', leaderboard, block=False))
 

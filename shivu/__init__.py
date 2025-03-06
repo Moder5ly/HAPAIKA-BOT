@@ -1,6 +1,5 @@
 import logging  
-import os
-from pyrogram import Client 
+from pyrogram import Client
 from telegram.ext import Application
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -15,25 +14,44 @@ logging.getLogger('httpx').setLevel(logging.WARNING)
 logging.getLogger("pyrate_limiter").setLevel(logging.ERROR)
 LOGGER = logging.getLogger(__name__)
 
-from shivu.config import Development as Config
+from config import Development as Config
 
+BOT_USERNAME = Config.BOT_USERNAME
+API_TOKEN = Config.API_TOKEN
 
-api_id = Config.api_id
-api_hash = Config.api_hash
-TOKEN = Config.TOKEN
-mongo_url = Config.mongo_url 
-PHOTO_URL = Config.PHOTO_URL 
-BOT_USERNAME = Config.BOT_USERNAME 
-sudo_users = Config.sudo_users
-OWNER_ID = Config.OWNER_ID 
+PHOTO_URL = Config.PHOTO_URL
 
-application = Application.builder().token(TOKEN).build()
-shivuu = Client("Shivu", api_id, api_hash, bot_token=TOKEN)
-mongo_client = AsyncIOMotorClient(mongo_url)
-db = mongo_client['Hapaika']
-collection = db['all_characters']
-user_totals_collection = db['user_totals']
-user_collection = db['user_collection']
-group_user_totals_collection = db['group_user_total']
-top_global_groups_collection = db['top_global_groups']
-pm_users = db['total_pm_users']
+OWNER_ID = Config.OWNER_ID
+sudo_users = Config.SUDO_USERS_ID
+
+GROUP_ID = Config.GROUP_ID
+CHARA_CHANNEL_ID = Config.CHARA_CHANNEL_ID
+
+SUPPORT_ID = Config.SUPPORT_ID
+
+# канал, куди шлються оновлення
+# бота та нові картинки
+UPDATE_CHANNEL = "hapaika_channel"
+
+# запуск бота
+application = Application.builder().token(API_TOKEN).build()
+bot = Client("Hapaika", Config.api_id, Config.api_hash, bot_token=API_TOKEN)
+
+# підключення до МонгоДБ
+connect_db = AsyncIOMotorClient(Config.mongo_url)
+database = connect_db['Hapaika']
+
+# таблиця усіх персонажів
+db_character_cards = database['character_cards']
+# таблиця колекцій користувачів
+db_user_collections = database['user_collections']
+
+# таблиця к-сті карток для виведення топу гравців у групі
+db_group_user_totals = database['group_user_totals']
+# таблиця кастомних значень повідомлень на випадання у чатах
+db_message_frequencies = database['group_message_frequencies']
+
+# таблиця користувачів, які користувалися ботом
+db_users = database['total_pm_users']
+# таблиця топу груп за к-стю карток (ПРИБРАТИ)
+db_top_global_groups = database['top_global_groups']

@@ -4,12 +4,20 @@ from pymongo import ReturnDocument
 from telegram import Update
 from telegram.ext import CommandHandler, CallbackContext
 
-from shivu import application, sudo_users, collection, db, CHARA_CHANNEL_ID, SUPPORT_CHAT
+from shivu import application, sudo_users, db_character_cards, database, CHARA_CHANNEL_ID, SUPPORT_ID
 
-WRONG_FORMAT_TEXT = "❌️ Неправильний формат!\nФормат: <code>/upload</code> <i>посилання_на_картинку ім'я-няшки назва-аніме подія теґи</i>\n\nІм'я няші, назву аніме та теґи писати через дефіс, наприклад:\n<code>/upload</code> <i>посилання-на-картинку махіро-ояма мій-братик-вже-не-братик! 8 mahiro-oyama</i>\n\nПодія вказується відповідним числом. Транслітерацію імені вказувати англійською."
+WRONG_FORMAT_TEXT = """Wrong ❌️ format...  eg. /upload Img_url muzan-kibutsuji Demon-slayer 3
+
+picture_url character-name title-name rarity-number
+
+use rarity number accordingly rarity Map
+
+rarity_map = 1 (⚪️ Common), 2 (🟣 Rare) , 3 (🟡 Legendary), 4 (🟢 Medium)"""
+
+
 
 async def get_next_sequence_number(sequence_name):
-    sequence_collection = db.sequences
+    sequence_collection = database.sequences
     sequence_document = await sequence_collection.find_one_and_update(
         {'_id': sequence_name}, 
         {'$inc': {'sequence_value': 1}}, 
@@ -20,205 +28,148 @@ async def get_next_sequence_number(sequence_name):
         return 0
     return sequence_document['sequence_value']
 
-# Код додавання няшок у бота
 async def upload(update: Update, context: CallbackContext) -> None:
     if str(update.effective_user.id) not in sudo_users:
-        await update.message.reply_text(f"⚠️ Зверніться до одного з адмінів бота у {SUPPORT_CHAT}, щоби додати цю картинку.")
+        await update.message.reply_text('Ask My Owner...')
         return
+
     try:
         args = context.args
-        if len(args) != 5:
-            await update.message.reply_text(WRONG_FORMAT_TEXT, parse_mode = 'HTML')
+        if len(args) != 4:
+            await update.message.reply_text(WRONG_FORMAT_TEXT)
             return
 
         character_name = args[1].replace('-', ' ').title()
-        anime = args[2].replace('-', ' ').capitalize()
-        event = args[3]
-        character_name_translit = args[4].replace('-', ' ').title()
+        anime = args[2].replace('-', ' ').title()
 
         try:
             urllib.request.urlopen(args[0])
         except:
-            await update.message.reply_text("❌️ Некоректне посилання. Радимо спочатку завантажити картинку на якийсь хостинг та вставляти пряме посилання звідти.")
+            await update.message.reply_text('Invalid URL.')
             return
 
-#        rarity_map = {
-#                     1: "⚪️ Звичайна", 
-#                     2: "🟣 Рідкісна", 
-#                     3: "🟡 Легендарна", 
-#                     4: "🔴 Міфічна"
-#                     }
-#        try:
-#            rarity = rarity_map[int(args[3])]
-#        except KeyError:
-#            await update.message.reply_text("""❌️ Неправильна рідкість. Оберіть рідкість з нижченаведених варіантів:
-#                                                1 : ⚪️ Звичайна
-#                                                2 : 🟣 Рідкісна
-#                                                3 : 🟡 Легендарна
-#                                                4 : 🔴 Міфічна""")
-#            return
+        rarity_map = {1: "⚪ Common", 2: "🟣 Rare", 3: "🟡 Legendary", 4: "🟢 Medium"}
+        try:
+            rarity = rarity_map[int(args[3])]
+        except KeyError:
+            await update.message.reply_text('Invalid rarity. Please use 1, 2, 3, 4, or 5.')
+            return
 
         id = str(await get_next_sequence_number('character_id')).zfill(2)
-        event_map =  {
-            0: "⚪️ Звичайна", 
-            1: "🎄 Різдвяна", 
-            4: "🧹 Покоївкова", 
-            7: "🏖️ Пляжна",
-            10: "🎃 Геловінська",
-            13: "🎳 Гуртівківент",
-        }
-        
+
         character = {
-            'img_url': args[0],
-            'name': character_name + " " + event_map[int(event)][0],
-            'name_translit': character_name_translit,
-            'anime': anime,
-#           'rarity': rarity,
-            'event': event,
-            'id': id,
-            'message_id' : 0
+            'picture_url': args[0],
+            'name': character_name,
+            'title': anime,
+            'rarity': rarity,
+            'id': id
         }
 
-        # Виведення інформації про додавання в канал Хапайки
         try:
             message = await context.bot.send_photo(
-                chat_id = CHARA_CHANNEL_ID,
-                photo = args[0],
-                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Теґи:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event_map[int(event)]}\n\nДодано користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
-                parse_mode = 'HTML'
+                chat_id=CHARA_CHANNEL_ID,
+                photo=args[0],
+                caption=f'<b>Character Name:</b> {character_name}\n<b>Anime Name:</b> {anime}\n<b>Rarity:</b> {rarity}\n<b>ID:</b> {id}\nAdded by <a href="tg://user?id={update.effective_user.id}">{update.effective_user.first_name}</a>',
+                parse_mode='HTML'
             )
             character['message_id'] = message.message_id
-            await collection.insert_one(character)
-            await update.message.reply_text("✅ Няшку успішно додано!")
+            await db_character_cards.insert_one(character)
+            await update.message.reply_text('CHARACTER ADDED....')
         except:
-            await collection.insert_one(character)
-            await update.message.reply_text("⚠️ Няшку додано, однак не знайдено Telegram-каналу бази даних.")
+            await db_character_cards.insert_one(character)
+            update.effective_message.reply_text("Character Added but no Database Channel Found, Consider adding one.")
         
     except Exception as e:
-        await update.message.reply_text(f"❌️ Не вдалося завантажити няшку. Помилка: {str(e)}\nЯкщо ви вважаєте, що помилка в коді, зверніться до адмінів бота у {SUPPORT_CHAT}", parse_mode = 'HTML')
+        await update.message.reply_text(f'Character Upload Unsuccessful. Error: {str(e)}\nIf you think this is a source error, forward to: {SUPPORT_ID}')
 
-# Код видалення няшок з бота
 async def delete(update: Update, context: CallbackContext) -> None:
     if str(update.effective_user.id) not in sudo_users:
-        await update.message.reply_text(f"⚠️ Зверніться до одного з адмінів бота у {SUPPORT_CHAT}, щоби видалити цю картинку.")
+        await update.message.reply_text('Ask my Owner to use this Command...')
         return
 
     try:
         args = context.args
         if len(args) != 1:
-            await update.message.reply_text("❌️ Неправильний формат!\nФормат: <code>/delete</code> <i>ID</i>", parse_mode = 'HTML')
+            await update.message.reply_text('Incorrect format... Please use: /delete ID')
             return
+
         
-        character = await collection.find_one_and_delete({'id': args[0]})
+        character = await db_character_cards.find_one_and_delete({'id': args[0]})
 
         if character:
-            await context.bot.delete_message(chat_id = CHARA_CHANNEL_ID, message_id = character['message_id'])
-            await update.message.reply_text("✅ ГОТОВО")
+            
+            await context.bot.delete_message(chat_id=CHARA_CHANNEL_ID, message_id=character['message_id'])
+            await update.message.reply_text('DONE')
         else:
-            await update.message.reply_text("✅ Няшку успішно видалено з бази даних, але не знайдено в базі даних чи каналі.")
+            await update.message.reply_text('Deleted Successfully from db, but character not found In Channel')
     except Exception as e:
         await update.message.reply_text(f'{str(e)}')
 
-# Код оновлення няшок в боті
 async def update(update: Update, context: CallbackContext) -> None:
     if str(update.effective_user.id) not in sudo_users:
-        await update.message.reply_text(f"⚠️ Зверніться до одного з адмінів бота у {SUPPORT_CHAT}, щоби оновити цю картинку.")
+        await update.message.reply_text('You do not have permission to use this command.')
         return
 
     try:
         args = context.args
         if len(args) != 3:
-            await update.message.reply_text("❌️ Неправильний формат! Формат: <code>/update</code> <i>id поле нове_значення<i>", parse_mode = 'HTML')
+            await update.message.reply_text('Incorrect format. Please use: /update id field new_value')
             return
 
-        # шукаємо няшку за ID
-        character = await collection.find_one({'id': args[0]})
+        # Get character by ID
+        character = await db_character_cards.find_one({'id': args[0]})
         if not character:
-            await update.message.reply_text("❌️ Няшку не знайдено.")
+            await update.message.reply_text('Character not found.')
             return
 
-        # перевіряємо, чи поле валідне
-        valid_fields = ['img_url', 'name', 'name_translit', 'anime', 'event']
+        # Check if field is valid
+        valid_fields = ['picture_url', 'name', 'title', 'rarity']
         if args[1] not in valid_fields:
-            await update.message.reply_text(f"❌️ Неправильно вказане поле. Будь ласка, оберіть одне з наступних: {', '.join(valid_fields)}.")
+            await update.message.reply_text(f'Invalid field. Please use one of the following: {", ".join(valid_fields)}')
             return
 
-        # змінюємо поле
-        if args[1] in ['name', 'name_translit']:
+        # Update field
+        if args[1] in ['name', 'title']:
             new_value = args[2].replace('-', ' ').title()
-        elif args[1] == 'anime':
-            new_value = args[2].replace('-', ' ').capitalize()
-       # elif args[1] == 'rarity':
-       #     rarity_map = {
-       #              1: "⚪️ Звичайна", 
-       #              2: "🟣 Рідкісна", 
-       #              3: "🟡 Легендарна", 
-       #              4: "🔴 Міфічна",
-       #              5: "💮 Особлива"
-       #              }
-       #     try:
-       #         new_value = rarity_map[int(args[2])]
-       #     except KeyError:
-       #         await update.message.reply_text("""❌️ Неправильна рідкість. Оберіть рідкість з нижченаведених варіантів:
-       #                                         1 : ⚪️ Звичайна
-       #                                         2 : 🟣 Рідкісна
-       #                                         3 : 🟡 Легендарна
-       #                                         4 : 🔴 Міфічна
-       #                                         5 : 💮 Особлива""")
-       #         return
-        elif args[1] == 'event':
-            new_value = args[2]         
+        elif args[1] == 'rarity':
+            rarity_map = {1: "⚪ Common", 2: "🟣 Rare", 3: "🟡 Legendary", 4: "🟢 Medium", 5: "💮 Special edition"}
+            try:
+                new_value = rarity_map[int(args[2])]
+            except KeyError:
+                await update.message.reply_text('Invalid rarity. Please use 1, 2, 3, 4, or 5.')
+                return
         else:
             new_value = args[2]
 
-        await collection.find_one_and_update({'id': args[0]}, {'$set': {args[1]: new_value}})
+        await db_character_cards.find_one_and_update({'id': args[0]}, {'$set': {args[1]: new_value}})
 
-# Виведення інформації про оновлення в канал Хапайки
-        event_map =  {
-            0: "⚪️ Звичайна", 
-            1: "🎄 Різдвяна", 
-            4: "🧹 Покоївкова", 
-            7: "🏖️ Пляжна",
-            10: "🎃 Геловінська",
-            13: "🎳 Гуртівківент",
-        }
         
-        # якщо міняється картинка
-        if args[1] == 'img_url':
-            await context.bot.delete_message(chat_id = CHARA_CHANNEL_ID, message_id = int(character['message_id']))
+        if args[1] == 'picture_url':
+            await context.bot.delete_message(chat_id=CHARA_CHANNEL_ID, message_id=character['message_id'])
             message = await context.bot.send_photo(
-                chat_id = CHARA_CHANNEL_ID,
-                photo = new_value,
-                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Теґи:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event_map[int(event)]}\n\nОновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
-                parse_mode = 'HTML'
+                chat_id=CHARA_CHANNEL_ID,
+                photo=new_value,
+                caption=f'<b>Character Name:</b> {character["name"]}\n<b>Anime Name:</b> {character["title"]}\n<b>Rarity:</b> {character["rarity"]}\n<b>ID:</b> {character["id"]}\nUpdated by <a href="tg://user?id={update.effective_user.id}">{update.effective_user.first_name}</a>',
+                parse_mode='HTML'
             )
             character['message_id'] = message.message_id
-
-            await collection.find_one_and_update({'id': args[0]}, {'$set': {'message_id': message.message_id}})
-        # якщо міняється івент
-        elif args[1] == 'event':
+            await db_character_cards.find_one_and_update({'id': args[0]}, {'$set': {'message_id': message.message_id}})
+        else:
+            
             await context.bot.edit_message_caption(
-                chat_id = CHARA_CHANNEL_ID,
-                message_id = int(character['message_id']),
-                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Теґи:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event_map[int(event)]}\n\nОновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>\n\nНе забудьте оновити ім'я няшки, аби відповідала події!",
-                parse_mode = 'HTML'
-            )
-        # якщо міняється щось інше
-        else:           
-            await context.bot.edit_message_caption(
-                chat_id = CHARA_CHANNEL_ID,
-                message_id = int(character['message_id']),
-                caption = f"<b>Няшка:</b> {character_name} - {id}\n<b>Теґи:</b> {character_name_translit}\n<b>Тайтл:</b> {anime}\n<b>Подія:</b> {event_map[int(event)]}\n\nОновлено користувачем <a href='tg://user?id={update.effective_user.id}'>{update.effective_user.first_name}</a>",
-                parse_mode = 'HTML'
+                chat_id=CHARA_CHANNEL_ID,
+                message_id=character['message_id'],
+                caption=f'<b>Character Name:</b> {character["name"]}\n<b>Anime Name:</b> {character["title"]}\n<b>Rarity:</b> {character["rarity"]}\n<b>ID:</b> {character["id"]}\nUpdated by <a href="tg://user?id={update.effective_user.id}">{update.effective_user.first_name}</a>',
+                parse_mode='HTML'
             )
 
-        await update.message.reply_text("✅ Завершено оновлення в базі даних. Однак іноді потрібен час, щоби оновити опис у вашому чаті, тому зачекайте.")
+        await update.message.reply_text('Updated Done in Database.... But sometimes it Takes Time to edit Caption in Your Channel..So wait..')
     except Exception as e:
-        await update.message.reply_text(f"❌️ Схоже, бота не додано до чату, або такої няшки не існує, або неправильний id няшки.")
+        await update.message.reply_text(f'I guess did not added bot in channel.. or character uploaded Long time ago.. Or character not exits.. orr Wrong id')
 
-UPLOAD_HANDLER = CommandHandler('upload', upload, block = True)
+UPLOAD_HANDLER = CommandHandler('upload', upload, block=False)
 application.add_handler(UPLOAD_HANDLER)
-DELETE_HANDLER = CommandHandler('delete', delete, block = True)
+DELETE_HANDLER = CommandHandler('delete', delete, block=False)
 application.add_handler(DELETE_HANDLER)
 UPDATE_HANDLER = CommandHandler('update', update, block=False)
 application.add_handler(UPDATE_HANDLER)
