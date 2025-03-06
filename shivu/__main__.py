@@ -18,7 +18,7 @@ from shivu import (
 )
 from shivu import application, LOGGER
 
-from modules.messages import (
+from shivu.modules.messages import (
     msg_alert_dont_spam,
     msg_info_card_lost,
     msg_info_card_appear,
@@ -33,7 +33,7 @@ from modules.messages import (
     msg_success_set_fav
 )
 
-from modules.messages import (
+from shivu.modules.messages import (
     gender_map1,
     gender_map2,
     gender_map3,
