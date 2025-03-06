@@ -3,7 +3,7 @@ import importlib, time, random, asyncio
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CommandHandler, CallbackContext, MessageHandler, filters
 
-from modules import ALL_MODULES
+from shivu.modules import ALL_MODULES
 
 for module_name in ALL_MODULES:
     imported_module = importlib.import_module("shivu.modules." + module_name)
