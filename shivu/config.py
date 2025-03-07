@@ -1,17 +1,18 @@
+import os
+
 class Config(object):
     LOGGER = True
 
     # ці значення отримати з my.telegram.org/apps
     api_id = 28177306
-    api_hash = "363c71a849c8f6117d66b15d110264a6"
+    api_hash = str(os.environ['api_hash'])
 
     # тег і API-токен бота
     BOT_USERNAME = "hapaika_bot"
-    API_TOKEN = "7325552038:AAER11O3ZVBcgBu29BUhvj2Dof9paAaoWfc"
+    API_TOKEN = str(os.environ['api_token'])
 
     # база даних бота
-    mongo_url = ("mongodb+srv://moder5ly:n64o3qsMyxvsSywY@cluster0.cjksadk.mongodb.net/"
-                 "?retryWrites=true&w=majority&appName=Cluster0")
+    mongo_url = str(os.environ['mongo_url'])
 
     # картинки бота
     PHOTO_URL = ["https://i.ibb.co/D5DhBVD/art1.png",
