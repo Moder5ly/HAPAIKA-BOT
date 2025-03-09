@@ -51,7 +51,7 @@ async def change_frequency(update: Update, context: CallbackContext):
             return
 
         # ЗМЕНШИТИ З ЧАСОМ
-        min_frequency = 500
+        min_frequency = 250
         new_frequency = int(args[0])
 
         # якщо частота занизька, то фейл команди

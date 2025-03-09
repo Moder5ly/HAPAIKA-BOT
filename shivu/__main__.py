@@ -82,7 +82,7 @@ async def message_counter(update: Update, context: CallbackContext) -> None:
         if chat_frequency:
             message_frequency = chat_frequency.get('frequency', 10)
         else:
-            message_frequency = 500
+            message_frequency = 250
 
         # антиспам функція
         if chat_id in last_user and last_user[chat_id]['user_id'] == user_id:
