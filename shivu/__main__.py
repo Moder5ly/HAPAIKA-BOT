@@ -342,7 +342,7 @@ async def favourite(update: Update, context: CallbackContext) -> None:
 
     # якщо картки немає, то фейл команди
     character_id = context.args[0]
-    character = next((c for c in user['characters'] if c['id'] == character_id), None)
+    character = next((c for c in user['characters'] if int(c['id']) == int(character_id)), None)
 
     if not character:
         message_error3 = msg_error_not_in_coll.split('|')
