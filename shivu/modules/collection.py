@@ -70,7 +70,7 @@ async def harem(update: Update, context: CallbackContext, page=0) -> None:
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     if 'favorites' in user and user['favorites']:
-        fav_character_id = user['favorites'][0]
+        fav_character_id = int(user['favorites'][0])
         fav_character = next((c for c in user['characters'] if c['id'] == fav_character_id), None)
 
         if fav_character and 'picture_url' in fav_character:
