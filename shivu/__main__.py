@@ -1,4 +1,4 @@
-import importlib, time, random, asyncio
+import importlib, time, random, asyncio, re
 
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CommandHandler, CallbackContext, MessageHandler, filters
@@ -186,6 +186,8 @@ async def guess(update: Update, context: CallbackContext) -> None:
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
 
+    # об'єднання аргументів (слів) у один рядок,
+    # розділений пробілами
     guess_word = ' '.join(context.args).lower() if context.args else ''
 
     # якщо останньої картки нема у чаті
@@ -195,7 +197,7 @@ async def guess(update: Update, context: CallbackContext) -> None:
         return
 
     # якщо вже відгадано, але хтось намагається
-    # ще раз, то кажемо до побачення
+    # ще раз, то відмовляємо
     if chat_id in guesses:
         message_error = msg_error_card_guessed.split('|')
 
@@ -209,8 +211,8 @@ async def guess(update: Update, context: CallbackContext) -> None:
     if "()" in guess_word or "&" in guess_word.lower():
         return
 
-    # ділимо
-    name_parts = last_card[chat_id]['name'].lower().split()
+    # ділимо імена в картці
+    name_parts = re.split(' |, ', last_card[chat_id]['name'].lower())
 
     # якщо ім'я/прізвище правильне
     if sorted(name_parts) == sorted(guess_word.split()) or any(part == guess_word for part in name_parts):
