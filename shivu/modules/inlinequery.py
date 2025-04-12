@@ -67,7 +67,8 @@ async def inline_query(update: Update, context: CallbackContext) -> None:
             all_characters = list(await db_character_cards.find(
                 {"$or": [
                     {"name": regex},
-                    {"title": regex}
+                    {"title": regex},
+                    {"tags": regex},
                 ]}
             ).to_list(length=None))
         else:
@@ -132,7 +133,7 @@ async def inline_query(update: Update, context: CallbackContext) -> None:
                        message_card[7])
 
             keyboard = [
-                [InlineKeyboardButton("⚠️ Доповісти про ШІ", url=f'http://t.me/{SUPPORT_ID}')]
+                [InlineKeyboardButton("⚠️ Доповісти про ШІ/русню", url=f'http://t.me/{SUPPORT_ID}')]
             ]
 
         results.append(
@@ -146,7 +147,7 @@ async def inline_query(update: Update, context: CallbackContext) -> None:
             )
         )
 
-    await update.inline_query.answer(results, next_offset=next_offset, cache_time=5)
+    await update.inline_query.answer(results, next_offset=next_offset, cache_time=1)
 
 # хендлер інлайну
 application.add_handler(
